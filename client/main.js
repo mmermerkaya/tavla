@@ -101,6 +101,10 @@ piecesData.forEach(function(data, i) {
   data.id = i;
 }),
 
+Meteor.startup(function () {
+  Session.set('selected', null);
+});
+
 Template.board.helpers({
   topRow: piecesData.slice(12, 24),
 
@@ -109,8 +113,13 @@ Template.board.helpers({
 
 Template.cell.events({
   'click': function clicked (event) {
-    console.log('previous ' + Session.get('selected'));
-    Session.set('selected', this.id);
-    console.log('clicked ' + Session.get('selected'));
+    if (Session.get('selected') === null) {
+      console.log('selected ' + this.id);
+      Session.set('selected', this.id);
+    }
+    else {
+      console.log('moving ' + Session.get('selected') + ' to ' + this.id);
+      Session.set('selected', null);
+    }
   }
 });
