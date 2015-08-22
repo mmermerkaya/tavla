@@ -2,7 +2,7 @@
     <title>Tavla</title>
 </head>
  
-<body>
+<template name="mainLayout">
   <div class="container">
     <header class="navbar navbar-default" role="navigation"> 
       <div class="navbar-header">
@@ -11,10 +11,16 @@
     </header>
 
     <div id="main">
-      {{> board}}
+      {{>Template.dynamic template=content}}
     </div>
   </div>
-</body>
+</template>
+
+<template name="landingPage">
+  <div class="landingPage">
+    <h1>Welcome to Tavla!</h1>
+  </div>
+</template>
 
 <template name="board">
   <div class="board">
