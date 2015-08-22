@@ -125,6 +125,10 @@ Template.cell.events({
       console.log('selected ' + this.id);
       Session.set('selected', this.id);
     }
+    else if (Session.get('selected') === this.id) {
+      console.log('deselected ' + this.id);
+      Session.set('selected', null);
+    }
     else {
       console.log('moving ' + Session.get('selected') + ' to ' + this.id);
       Meteor.call('movePiece', Session.get('selected'), this.id, function(error, response){});
