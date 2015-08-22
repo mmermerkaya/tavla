@@ -1,0 +1,38 @@
+<head>
+    <title>Tavla</title>
+</head>
+ 
+<body>
+  <div class="container">
+    <header class="navbar navbar-default" role="navigation"> 
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">Tavla</a>
+      </div>
+    </header>
+
+    <div id="main">
+      {{> board}}
+    </div>
+  </div>
+</body>
+
+<template name="board">
+  <div class="board">
+    <div class="row top">
+      {{#each topRow}}
+        {{> cell}}
+      {{/each}}
+    </div>
+    <div class="row bottom">
+      {{#each bottomRow}}
+        {{> cell}}
+      {{/each}}
+    </div>
+  </div>
+</template>
+
+<template name="cell">
+  <div class="cell">
+    {{color}} {{count}}
+  </div>
+</template>

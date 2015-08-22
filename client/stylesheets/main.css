@@ -1,0 +1,8 @@
+.board {
+	width: 600px;
+	margin: 0 auto;
+}
+.cell {
+	float: left;
+	padding: 10px;
+}
