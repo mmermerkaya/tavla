@@ -6,5 +6,9 @@
 	float: left;
 	padding: 5px;
 	margin: 5px;
-	background-color: #CCC
+	background-color: #CCC;
+}
+
+.selected {
+	background-color: #C00;
 }

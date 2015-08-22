@@ -111,6 +111,14 @@ Template.board.helpers({
   bottomRow: piecesData.slice(0, 12).reverse()
 });
 
+Template.cell.helpers({
+  selectedClass: function() {
+    if (this.id == Session.get('selected')) {
+      return 'selected';
+    }
+  }
+})
+
 Template.cell.events({
   'click': function clicked (event) {
     if (Session.get('selected') === null) {
