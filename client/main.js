@@ -102,8 +102,6 @@ piecesData.forEach(function(data, i) {
 }),
 
 Template.board.helpers({
-  pieces: piecesData,
-
   topRow: piecesData.slice(12, 24),
 
   bottomRow: piecesData.slice(0, 12).reverse()
