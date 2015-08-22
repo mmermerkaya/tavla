@@ -127,6 +127,7 @@ Template.cell.events({
     }
     else {
       console.log('moving ' + Session.get('selected') + ' to ' + this.id);
+      Meteor.call('movePiece', Session.get('selected'), this.id, function(error, response){});
       Session.set('selected', null);
     }
   }
