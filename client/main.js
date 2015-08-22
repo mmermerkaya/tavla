@@ -97,10 +97,22 @@ var piecesData = [
   },
 ];
 
+piecesData.forEach(function(data, i) {
+  data.id = i;
+}),
+
 Template.board.helpers({
   pieces: piecesData,
 
   topRow: piecesData.slice(12, 24),
 
   bottomRow: piecesData.slice(0, 12).reverse()
+});
+
+Template.cell.events({
+  'click': function clicked (event) {
+    console.log('previous ' + Session.get('selected'));
+    Session.set('selected', this.id);
+    console.log('clicked ' + Session.get('selected'));
+  }
 });

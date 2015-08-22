@@ -1,8 +1,10 @@
 .board {
-	width: 600px;
+	width: 720px;
 	margin: 0 auto;
 }
 .cell {
 	float: left;
-	padding: 10px;
+	padding: 5px;
+	margin: 5px;
+	background-color: #CCC
 }
