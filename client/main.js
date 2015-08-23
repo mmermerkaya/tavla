@@ -25,6 +25,18 @@ Template.cell.helpers({
     if (this.id == Session.get('selected')) {
       return 'selected';
     }
+  },
+
+  availableClass: function() {
+    if (Session.get('selected') !== null) {
+      var board = Boards.findOne();
+      return board.dices.some(function(dice) {
+        if (this.id == Session.get('selected') + dice) {
+          return true;
+        }
+        return false;
+      }, this) ? 'available' : null;
+    }
   }
 })
 

@@ -110,8 +110,8 @@ Meteor.startup(function () {
     }),
 
     Boards.insert({
-      data: piecesData
-      dice: [6, 2]
+      data: piecesData,
+      dices: [6, 2]
     });
   }
 });

@@ -12,3 +12,7 @@
 .selected {
   background-color: #C00;
 }
+
+.available {
+  background-color: #0C0;
+}
