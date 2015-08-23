@@ -1,14 +1,14 @@
 .board {
-	width: 720px;
-	margin: 0 auto;
+  width: 720px;
+  margin: 0 auto;
 }
 .cell {
-	float: left;
-	padding: 5px;
-	margin: 5px;
-	background-color: #CCC;
+  float: left;
+  padding: 5px;
+  margin: 5px;
+  background-color: #CCC;
 }
 
 .selected {
-	background-color: #C00;
+  background-color: #C00;
 }
