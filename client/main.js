@@ -38,13 +38,16 @@ Template.board.helpers({
 
 Template.cell.helpers({
   cssClass: function() {
-    var board = Boards.findOne();
-
     if (this.id == Session.get('selected')) {
       return 'selected';
     }
-    if (Session.get('selected') !== null && board.dice.indexOf(this.id - Session.get('selected')) !== -1) {
-      return 'moveable';
+    
+    if (Session.get('selected') !== null) {
+      var board = Boards.findOne();
+      var dir = board.turn % 2 ? 1: -1;
+      if (board.dice.indexOf((this.id * -dir) + (Session.get('selected') * dir)) !== -1) {
+        return 'moveable';
+      }
     }
     return 'idle';
   }
