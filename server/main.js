@@ -1,21 +1,32 @@
 Meteor.methods({
   movePiece: function(from, to) {
-    var incModifier = { $inc: {} };
-    incModifier.$inc['data.'+from+'.count'] = -1;
-    incModifier.$inc['data.'+to+'.count'] = 1;
-    Boards.update({}, incModifier);
+    var modifier = { $inc: {}, $set: {} };
 
+    //Move piece
+    modifier.$inc['data.'+from+'.count'] = -1;
+    modifier.$inc['data.'+to+'.count'] = 1;
+
+    //Remove die value from dice array
     var die = Math.abs(to - from);
-    Boards.update({}, {$pull: {'dice': die}});
+    var dice = Boards.findOne().dice;
+    var index = dice.indexOf(die);
+    dice.splice(index, 1);
+    modifier.$set['dice'] = dice;
+
+    //Update database
+    Boards.update({}, modifier);
+
+    //New turn if no more dice left
+    if(dice.length == 0) {
+      Meteor.call('newTurn');
+    }
 
     console.log(Meteor.userId() + ' requested moving from ' + from + ' to ' + to);
-
-    Meteor.call('rollDice');
   },
 
-  rollDice: function() {
+  newTurn: function() {
     var dice = [Math.ceil(Random.fraction()*6), Math.ceil(Random.fraction()*6)]
-    Boards.update({}, {$set: {'dice': dice}});
+    Boards.update({}, {$set: {'dice': dice}, $inc: {'turn': 1}});
   }
 });
 
@@ -126,7 +137,8 @@ Meteor.startup(function () {
 
     Boards.insert({
       data: piecesData,
-      dice: [6, 2]
+      dice: [6, 2],
+      turn: 0
     });
   }
 });

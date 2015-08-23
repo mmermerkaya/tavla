@@ -26,6 +26,14 @@ Template.board.helpers({
     }
     return board.dice;
   },
+
+  turn: function() {
+    var board = Boards.findOne();
+    if(!board) {
+      return null;
+    }
+    return board.turn;
+  },
 });
 
 Template.cell.helpers({
