@@ -1,5 +1,13 @@
 Meteor.methods({
   movePiece: function(from, to) {
+    var incModifier = { $inc: {} };
+    incModifier.$inc['data.'+from+'.count'] = -1;
+    incModifier.$inc['data.'+to+'.count'] = 1;
+    Boards.update({}, incModifier);
+
+    var die = Math.abs(to - from);
+    Boards.update({}, {$pull: {'dice': die}});
+
     console.log(Meteor.userId() + ' requested moving from ' + from + ' to ' + to);
   }
 });
@@ -111,7 +119,7 @@ Meteor.startup(function () {
 
     Boards.insert({
       data: piecesData,
-      dices: [6, 2]
+      dice: [6, 2]
     });
   }
 });
