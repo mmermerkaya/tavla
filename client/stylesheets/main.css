@@ -6,6 +6,9 @@
   float: left;
   padding: 5px;
   margin: 5px;
+}
+
+.idle {
   background-color: #CCC;
 }
 
@@ -13,6 +16,6 @@
   background-color: #C00;
 }
 
-.available {
+.moveable {
   background-color: #0C0;
 }
