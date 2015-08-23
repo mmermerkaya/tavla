@@ -17,7 +17,15 @@ Template.board.helpers({
       return null;
     }
     return board.data.slice(0, 12).reverse();
-  }
+  },
+
+  dice: function() {
+    var board = Boards.findOne();
+    if(!board) {
+      return null;
+    }
+    return board.dice;
+  },
 });
 
 Template.cell.helpers({
@@ -47,7 +55,7 @@ Template.cell.events({
 
   'click .moveable': function available (event) {
     console.log('moving ' + Session.get('selected') + ' to ' + this.id);
-    Meteor.call('movePiece', Session.get('selected'), this.id, function(error, response){});
+    Meteor.call('movePiece', Session.get('selected'), this.id);
     Session.set('selected', null);
   }
 });

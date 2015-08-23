@@ -9,6 +9,13 @@ Meteor.methods({
     Boards.update({}, {$pull: {'dice': die}});
 
     console.log(Meteor.userId() + ' requested moving from ' + from + ' to ' + to);
+
+    Meteor.call('rollDice');
+  },
+
+  rollDice: function() {
+    var dice = [Math.ceil(Random.fraction()*6), Math.ceil(Random.fraction()*6)]
+    Boards.update({}, {$set: {'dice': dice}});
   }
 });
 
