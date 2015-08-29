@@ -4,7 +4,7 @@ Meteor.startup(function () {
 
 Template.board.helpers({
   topRow: function() {
-    var board = Boards.findOne();
+    var board = Boards.findOne({_id: FlowRouter.getParam('gameId')});
     if(!board) {
       return null;
     }
@@ -12,7 +12,7 @@ Template.board.helpers({
   },
 
   bottomRow: function() {
-    var board = Boards.findOne();
+    var board = Boards.findOne({_id: FlowRouter.getParam('gameId')});
     if(!board) {
       return null;
     }
@@ -20,7 +20,7 @@ Template.board.helpers({
   },
 
   dice: function() {
-    var board = Boards.findOne();
+    var board = Boards.findOne({_id: FlowRouter.getParam('gameId')});
     if(!board) {
       return null;
     }
@@ -28,7 +28,7 @@ Template.board.helpers({
   },
 
   turn: function() {
-    var board = Boards.findOne();
+    var board = Boards.findOne({_id: FlowRouter.getParam('gameId')});
     if(!board) {
       return null;
     }
@@ -43,7 +43,7 @@ Template.cell.helpers({
     }
     
     if (Session.get('selected') !== null) {
-      var board = Boards.findOne();
+      var board = Boards.findOne({_id: FlowRouter.getParam('gameId')});
       var dir = board.turn % 2 ? 1: -1;
       if (board.dice.indexOf((this.id * -dir) + (Session.get('selected') * dir)) !== -1) {
         return 'moveable';
@@ -54,19 +54,31 @@ Template.cell.helpers({
 })
 
 Template.cell.events({
-  'click .idle': function idle (event) {
+  'click .idle': function idle(event) {
     console.log('selected ' + this.id);
     Session.set('selected', this.id);
   },
 
-  'click .selected': function selected (event) {
+  'click .selected': function selected(event) {
     console.log('deselected ' + this.id);
     Session.set('selected', null);
   },
 
-  'click .moveable': function available (event) {
+  'click .moveable': function available(event) {
     console.log('moving ' + Session.get('selected') + ' to ' + this.id);
-    Meteor.call('movePiece', Session.get('selected'), this.id);
+    Meteor.call('movePiece', FlowRouter.getParam('gameId'), Session.get('selected'), this.id);
     Session.set('selected', null);
+  }
+});
+
+Template.landingPage.events({
+  'click .newGame': function newGame(event) {
+    Meteor.call('newGame', function(error, result) {
+      if (error) {
+        console.log('error', error);
+      }
+      console.log(result);
+      FlowRouter.go('/game/' + result);
+    });
   }
 });
