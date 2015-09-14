@@ -17,6 +17,7 @@ Board = React.createClass({
         return this.data.game.board.slice(0, 12).reverse();
     },
 
+    //TODO: calculate this during data retrieval and keep it in a React state.
     cssClass(cellId) {
         if (cellId == Session.get('selected')) {
             return 'selected';
@@ -47,6 +48,8 @@ Board = React.createClass({
             Meteor.call('movePiece', FlowRouter.getParam('gameId'), Session.get('selected'), cellId);
             Session.set('selected', null);
         }
+
+        //TODO: Remove forceUpdate. Put cell state information (idle/selected/moveable) in a React state.
         this.forceUpdate();
     },
 
