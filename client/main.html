@@ -1,49 +1,7 @@
 <head>
   <title>Tavla</title>
 </head>
- 
-<template name="mainLayout">
-  <div class="container">
-    <header class="navbar navbar-default" role="navigation"> 
-      <div class="navbar-header">
-        <a class="navbar-brand" href="/">Tavla</a>
-      </div>
-    </header>
 
-    <div id="main">
-      {{>Template.dynamic template=content}}
-    </div>
-  </div>
-</template>
-
-<template name="landingPage">
-  <div class="landingPage">
-    <h1>Welcome to Tavla!</h1>
-    <button class='newGame'>New Game</button>
-  </div>
-</template>
-
-<template name="board">
-  <div class="board">
-    <div class="row top">
-      {{#each topRow}}
-        {{> cell}}
-      {{/each}}
-    </div>
-    <div class="row bottom">
-      {{#each bottomRow}}
-        {{> cell}}
-      {{/each}}
-    </div>
-  </div>
-  {{dice}}
-  {{turn}}
-</template>
-
-<template name="cell">
-  <div class="cell {{cssClass}}">
-    {{id}}
-    <br/>
-    {{color}} {{count}}
-  </div>
-</template>
+<body>
+    <div class="container" id="main"></div>
+</body>
