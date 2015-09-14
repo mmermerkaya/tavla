@@ -1,4 +1,5 @@
 Meteor.startup(function () {
     Session.set('selected', null);
-    React.render(<App />, document.getElementById("main"));
+    injectTapEventPlugin();
+    //React.render(<App />, document.getElementById("container"));
 });

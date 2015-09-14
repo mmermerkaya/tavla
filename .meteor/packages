@@ -8,10 +8,14 @@ meteor-platform
 autopublish
 insecure
 underscore
-twbs:bootstrap
 kadira:flow-router
 artwells:accounts-guest
 msavin:mongol
 aldeed:collection2
 react
 kadira:react-layout
+meteorhacks:npm
+cosmos:browserify
+
+
+npm-container

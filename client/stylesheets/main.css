@@ -1,21 +1,25 @@
+#container {
+    font-family: 'Roboto', sans-serif;
+}
+
 .board {
-  width: 720px;
-  margin: 0 auto;
+    width: 720px;
+    margin: 0 auto;
 }
 .cell {
-  float: left;
-  padding: 5px;
-  margin: 5px;
+    float: left;
+    padding: 5px;
+    margin: 5px;
 }
 
 .idle {
-  background-color: #CCC;
+    background-color: #CCC;
 }
 
 .selected {
-  background-color: #C00;
+    background-color: #C00;
 }
 
 .moveable {
-  background-color: #0C0;
+    background-color: #0C0;
 }
