@@ -1,7 +1,3 @@
-#container {
-    font-family: 'Roboto', sans-serif;
-}
-
 .board {
     width: 720px;
     margin: 0 auto;
@@ -22,4 +18,8 @@
 
 .moveable {
     background-color: #0C0;
+}
+
+.row {
+	clear: both;
 }

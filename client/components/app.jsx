@@ -1,23 +1,7 @@
-const {
-    AppBar
-} = mui;
-
-const ThemeManager = new mui.Styles.ThemeManager();
-
 App = React.createClass({
-    childContextTypes: {
-        muiTheme: React.PropTypes.object
-    },
-
-    getChildContext: function() {
-        return {
-            muiTheme: ThemeManager.getCurrentTheme()
-        };
-    },
-
     render() {
         return (
-            <div>
+            <div className="ui container">
                 {/*
                     <header class="navbar navbar-default" role="navigation">
                     <div class="navbar-header">
@@ -25,9 +9,13 @@ App = React.createClass({
                     </div>
                     </header>
                 */}
-                <AppBar title="Tavla" />
+                <div className="ui menu">
+                    <div className="header item">
+                        Tavla
+                    </div>
+                </div>
 
-                {this.props.content()}
+                {this.props.content}
             </div>
         );
     }

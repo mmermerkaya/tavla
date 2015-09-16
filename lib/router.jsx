@@ -1,19 +1,11 @@
 FlowRouter.route('/', {
     action: function() {
-        ReactLayout.render(App, {
-            content() {
-                return <LandingPage />;
-            }
-        });
+        ReactLayout.render(App, {content: <LandingPage />});
     }
 });
 
 FlowRouter.route('/game/:gameId', {
     action: function() {
-        ReactLayout.render(App, {
-            content() {
-                return <Board />;
-            }
-        });
+        ReactLayout.render(App, {content: <Board />});
     }
 });
