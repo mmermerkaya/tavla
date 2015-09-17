@@ -1,9 +1,4 @@
-.board {
-    width: 720px;
-    margin: 0 auto;
-}
 .cell {
-    float: left;
     padding: 5px;
     margin: 5px;
 }
@@ -18,8 +13,4 @@
 
 .moveable {
     background-color: #0C0;
-}
-
-.row {
-	clear: both;
 }

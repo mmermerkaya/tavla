@@ -8,9 +8,7 @@ Cell = React.createClass({
 
         return (
             <div className={className} onClick={this.clickHandler}>
-                {this.props.cellData.id}
-                <br/>
-                {this.props.cellData.color} {this.props.cellData.count}
+                {this.props.cellData.id} {this.props.cellData.color} {this.props.cellData.count}
             </div>
         )
     }

@@ -55,7 +55,11 @@ Board = React.createClass({
 
     renderCell(cell) {
         var cssClass = this.cssClass(cell.id);
-        return (<Cell cellData={cell} cssClass={cssClass} key={cell.id} clickHandler={this.cellClickHandler} />);
+        return (
+            <div className="column">
+                <Cell cellData={cell} cssClass={cssClass} key={cell.id} clickHandler={this.cellClickHandler} />
+            </div>
+        );
     },
 
     render() {
@@ -63,11 +67,9 @@ Board = React.createClass({
         var bottomRow = this.bottomRow();
 
         return (
-            <div className="board">
-                <div className="row top">
+            <div className="ui container">
+                <div className="ui twelve column centered grid">
                     {topRow.map(this.renderCell)}
-                </div>
-                <div className="row bottom">
                     {bottomRow.map(this.renderCell)}
                 </div>
                 {this.data.game.dice}
