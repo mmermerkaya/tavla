@@ -9,11 +9,11 @@ Board = React.createClass({
         }
     },
 
-    topRow: function() {
+    topRow() {
         return this.data.game.board.slice(12, 24);
     },
 
-    bottomRow: function() {
+    bottomRow() {
         return this.data.game.board.slice(0, 12).reverse();
     },
 
