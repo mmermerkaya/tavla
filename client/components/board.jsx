@@ -24,7 +24,7 @@ Board = React.createClass({
         }
 
         if (Session.get('selected') !== null) {
-            var dir = this.data.game.turn % 2 ? 1: -1;
+            var dir = this.data.game.turn % 2 ? -1: 1;
             if (this.data.game.board[cellId].color !== (this.data.game.turn+1) % 2 &&
                 this.data.game.dice.indexOf((cellId * -dir) + (Session.get('selected') * dir)) !== -1) {
                 return 'moveable';
