@@ -25,7 +25,8 @@ Board = React.createClass({
 
         if (Session.get('selected') !== null) {
             var dir = this.data.game.turn % 2 ? 1: -1;
-            if (this.data.game.dice.indexOf((cellId * -dir) + (Session.get('selected') * dir)) !== -1) {
+            if (this.data.game.board[cellId].color !== (this.data.game.turn+1) % 2 &&
+                this.data.game.dice.indexOf((cellId * -dir) + (Session.get('selected') * dir)) !== -1) {
                 return 'moveable';
             }
         }
@@ -35,9 +36,16 @@ Board = React.createClass({
 
     cellClickHandler(cellId) {
         console.log(cellId);
+
         if (this.cssClass(cellId) === 'idle') {
-            console.log('selected ' + cellId);
-            Session.set('selected', cellId);
+            if (this.data.game.board[cellId].color === this.data.game.turn % 2) {
+                console.log('selected ' + cellId);
+                Session.set('selected', cellId);
+            }
+            else if(Session.get('selected') !== null) {
+                console.log('deselected ' + Session.get('selected'));
+                Session.set('selected', null);
+            }
         }
         else if (this.cssClass(cellId) === 'selected') {
             console.log('deselected ' + cellId);

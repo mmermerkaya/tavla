@@ -25,9 +25,14 @@ Cell = React.createClass({
     render() {
         var className = 'ui ' + this.getColor() + ' label';
 
+        var content = [];
+        for (var i = this.props.cellData.count; i > 0; i--) {
+            content.push(<span>X<br /></span>);
+        };
+
         return (
             <div className={className} onClick={this.clickHandler}>
-                {this.props.cellData.count}
+                {content}
             </div>
         )
     }
