@@ -9,11 +9,11 @@ Board = React.createClass({
         }
     },
 
-    componentWillMount() {
-        this.setState({
+    getInitialState() {
+        return {
             selected: null,
             moveable: []
-        });
+        };
     },
 
     topRow() {
@@ -35,7 +35,9 @@ Board = React.createClass({
                 this.data.game.dice.forEach(function(die) {
                     var targetCell = cellId + (die * dir);
                     if (targetCell >= 0 && targetCell < 24 &&
-                        this.data.game.board[targetCell].color !== (this.data.game.turn+1) % 2) {
+                        (this.data.game.board[targetCell].color !== (this.data.game.turn+1) % 2 ||
+                            (this.data.game.board[targetCell].color === (this.data.game.turn+1) % 2 &&
+                            this.data.game.board[targetCell].count === 1))) {
                         moveable.push(targetCell);
                     }
                 }.bind(this));
@@ -102,6 +104,8 @@ Board = React.createClass({
                 Dice: {this.data.game.dice.toString()}
                 <br />
                 Turn: {this.data.game.turn}
+                <br />
+                Broken: <Broken data={this.data.game.broken}/>
             </div>
         );
     }

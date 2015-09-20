@@ -119,7 +119,11 @@ Meteor.methods({
         return Games.insert({
             board: board,
             dice: Meteor.call('rollDice'),
-            turn: 0
+            turn: 0,
+            broken: {
+                color: -1,
+                count: 0
+            }
         });
     }
 });
