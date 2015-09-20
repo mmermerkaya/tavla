@@ -9,6 +9,13 @@ Board = React.createClass({
         }
     },
 
+    componentWillMount() {
+        this.setState({
+            selected: null,
+            moveable: []
+        });
+    },
+
     topRow() {
         return this.data.game.board.slice(12, 24);
     },
@@ -17,48 +24,60 @@ Board = React.createClass({
         return this.data.game.board.slice(0, 12).reverse();
     },
 
-    //TODO: calculate this during data retrieval and keep it in a React state.
-    cssClass(cellId) {
-        if (cellId == Session.get('selected')) {
-            return 'selected';
-        }
-
-        if (Session.get('selected') !== null) {
-            var dir = this.data.game.turn % 2 ? -1: 1;
-            if (this.data.game.board[cellId].color !== (this.data.game.turn+1) % 2 &&
-                this.data.game.dice.indexOf((cellId * -dir) + (Session.get('selected') * dir)) !== -1) {
-                return 'moveable';
-            }
-        }
-
-        return 'idle';
-    },
-
     cellClickHandler(cellId) {
         console.log(cellId);
 
         if (this.cssClass(cellId) === 'idle') {
             if (this.data.game.board[cellId].color === this.data.game.turn % 2) {
                 console.log('selected ' + cellId);
-                Session.set('selected', cellId);
+                var moveable = [];
+                var dir = this.data.game.turn % 2 ? 1: -1;
+                this.data.game.dice.forEach(function(die) {
+                    var targetCell = cellId + (die * dir);
+                    if (targetCell >= 0 && targetCell < 24 &&
+                        this.data.game.board[targetCell].color !== (this.data.game.turn+1) % 2) {
+                        moveable.push(targetCell);
+                    }
+                }.bind(this));
+
+                this.setState({
+                    selected: cellId,
+                    moveable: moveable
+                });
             }
-            else if(Session.get('selected') !== null) {
-                console.log('deselected ' + Session.get('selected'));
-                Session.set('selected', null);
+            else if(this.state.selected !== null) {
+                console.log('deselected ' + this.state.selected);
+                this.deselect();
             }
         }
         else if (this.cssClass(cellId) === 'selected') {
             console.log('deselected ' + cellId);
-            Session.set('selected', null);
+            this.deselect();
         }
         else if (this.cssClass(cellId) === 'moveable') {
-            console.log('moving ' + Session.get('selected') + ' to ' + cellId);
-            Meteor.call('movePiece', FlowRouter.getParam('gameId'), Session.get('selected'), cellId);
-            Session.set('selected', null);
+            console.log('moving ' + this.state.selected + ' to ' + cellId);
+            Meteor.call('movePiece', FlowRouter.getParam('gameId'), this.state.selected, cellId);
+            this.deselect();
         }
+    },
 
-        //TODO: Remove forceUpdate. Put cell state information (idle/selected/moveable) in a React state.
-        this.forceUpdate();
+    deselect() {
+        this.setState({
+            selected: null,
+            moveable: []
+        });
+    },
+
+    cssClass(cellId) {
+        if(cellId === this.state.selected) {
+            return 'selected';
+        }
+        else if (this.state.moveable.indexOf(cellId) !== -1) {
+            return 'moveable';
+        }
+        else {
+            return 'idle';
+        }
     },
 
     renderCell(cell) {
