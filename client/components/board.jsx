@@ -16,12 +16,20 @@ Board = React.createClass({
         };
     },
 
-    topRow() {
-        return this.data.game.board.slice(12, 24);
+    topLeftRow() {
+        return this.data.game.board.slice(12, 18);
     },
 
-    bottomRow() {
-        return this.data.game.board.slice(0, 12).reverse();
+    topRightRow() {
+        return this.data.game.board.slice(18, 24);
+    },
+
+    bottomLeftRow() {
+        return this.data.game.board.slice(6, 12).reverse();
+    },
+
+    bottomRightRow() {
+        return this.data.game.board.slice(0, 6).reverse();
     },
 
     cellClickHandler(cellId) {
@@ -92,14 +100,13 @@ Board = React.createClass({
     },
 
     render() {
-        var topRow = this.topRow();
-        var bottomRow = this.bottomRow();
-
         return (
             <div className="ui text container">
                 <div className="ui twelve column centered grid">
-                    {topRow.map(this.renderCell)}
-                    {bottomRow.map(this.renderCell)}
+                    {this.topLeftRow().map(this.renderCell)}
+                    {this.topRightRow().map(this.renderCell)}
+                    {this.bottomLeftRow().map(this.renderCell)}
+                    {this.bottomRightRow().map(this.renderCell)}
                 </div>
                 Dice: {this.data.game.dice.toString()}
                 <br />
