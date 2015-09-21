@@ -27,7 +27,7 @@ Board = React.createClass({
     cellClickHandler(cellId) {
         console.log(cellId);
 
-        if (this.cssClass(cellId) === 'idle') {
+        if (this.getCellState(cellId) === 'idle') {
             if (this.data.game.board[cellId].color === this.data.game.turn % 2) {
                 console.log('selected ' + cellId);
                 var moveable = [];
@@ -52,11 +52,11 @@ Board = React.createClass({
                 this.deselect();
             }
         }
-        else if (this.cssClass(cellId) === 'selected') {
+        else if (this.getCellState(cellId) === 'selected') {
             console.log('deselected ' + cellId);
             this.deselect();
         }
-        else if (this.cssClass(cellId) === 'moveable') {
+        else if (this.getCellState(cellId) === 'moveable') {
             console.log('moving ' + this.state.selected + ' to ' + cellId);
             Meteor.call('movePiece', FlowRouter.getParam('gameId'), this.state.selected, cellId);
             this.deselect();
@@ -70,7 +70,7 @@ Board = React.createClass({
         });
     },
 
-    cssClass(cellId) {
+    getCellState(cellId) {
         if(cellId === this.state.selected) {
             return 'selected';
         }
@@ -83,10 +83,10 @@ Board = React.createClass({
     },
 
     renderCell(cell) {
-        var cssClass = this.cssClass(cell.id);
+        cell.state = this.getCellState(cell.id);
         return (
             <div className="column" key={cell.id}>
-                <Cell cellData={cell} cssClass={cssClass} clickHandler={this.cellClickHandler} />
+                <Cell cellData={cell} clickHandler={this.cellClickHandler} />
             </div>
         );
     },

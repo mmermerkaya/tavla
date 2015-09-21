@@ -4,7 +4,7 @@ Cell = React.createClass({
     },
 
     getColor() {
-        switch (this.props.cssClass) {
+        switch (this.props.cellData.state) {
             case 'selected':
                 return 'red';
             case 'moveable':
