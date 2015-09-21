@@ -11,8 +11,7 @@ Board = React.createClass({
 
     getInitialState() {
         return {
-            selected: null,
-            moveable: []
+            selected: null
         };
     },
 
@@ -41,21 +40,9 @@ Board = React.createClass({
             if (this.getCellState(cellId) === 'idle') {
                 if (this.data.game.board[cellId].color === this.data.game.turn % 2) {
                     console.log('selected ' + cellId);
-                    var moveable = [];
-                    var dir = this.data.game.turn % 2 ? 1: -1;
-                    this.data.game.dice.forEach(function(die) {
-                        var targetCell = cellId + (die * dir);
-                        if (targetCell >= 0 && targetCell < 24 &&
-                            (this.data.game.board[targetCell].color !== (this.data.game.turn+1) % 2 ||
-                                (this.data.game.board[targetCell].color === (this.data.game.turn+1) % 2 &&
-                                this.data.game.board[targetCell].count === 1))) {
-                            moveable.push(targetCell);
-                        }
-                    }.bind(this));
 
                     this.setState({
-                        selected: cellId,
-                        moveable: moveable
+                        selected: cellId
                     });
                 }
                 else {
@@ -73,27 +60,44 @@ Board = React.createClass({
         }
         //if player has broken pieces
         else {
-
+            if (this.getCellState(cellId) === 'moveable') {
+                console.log('moving ' + this.state.selected + ' to ' + cellId);
+                Meteor.call('putPiece', FlowRouter.getParam('gameId'), cellId);
+            }
         }
     },
 
     deselect() {
         this.setState({
-            selected: null,
-            moveable: []
+            selected: null
         });
     },
 
     getCellState(cellId) {
-        if(cellId === this.state.selected) {
-            return 'selected';
-        }
-        else if (this.state.moveable.indexOf(cellId) !== -1) {
-            return 'moveable';
+        if (this.data.game.broken[this.data.game.turn % 2] === 0) {
+            if (cellId === this.state.selected) {
+                return 'selected';
+            }
+            else if (this.state.selected !== null) {
+                //required die value for this move
+                var val = (this.state.selected - cellId) * (this.data.game.turn % 2 ? -1 : 1);
+                if (this.data.game.dice.indexOf(val) !== -1 && //Distance is covered by dice and
+                    (this.data.game.board[cellId].color !== (this.data.game.turn+1) % 2 || //color isn't opponent's or
+                    this.data.game.board[cellId].count === 1)) { //there's only one piece
+                    return 'moveable';
+                }
+            }
         }
         else {
-            return 'idle';
+            //required die value for this move
+            var val = this.data.game.turn % 2 ? cellId+1 : 24-cellId;
+            if (this.data.game.dice.indexOf(val) !== -1 && //Distance is covered by dice and
+                (this.data.game.board[cellId].color !== (this.data.game.turn+1) % 2 || //color isn't opponent's or
+                this.data.game.board[cellId].count === 1)) { //there's only one piece
+                return 'moveable';
+            }
         }
+        return 'idle';
     },
 
     renderCell(cell) {
@@ -114,12 +118,27 @@ Board = React.createClass({
                     {this.bottomLeftRow().map(this.renderCell)}
                     {this.bottomRightRow().map(this.renderCell)}
                 </div>
-                Dice: {this.data.game.dice.toString()}
-                <br />
-                Turn: {this.data.game.turn}
-                <br />
-                Broken 0: <Broken color={0} count={this.data.game.broken[0]} />
-                Broken 1: <Broken color={1} count={this.data.game.broken[1]} />
+                <div className="ui centered grid">
+                    <div className="row">
+                        <div className="column">Dice</div>
+                        <div className="column">Turn</div>
+                        <div className="column">Broken</div>
+                    </div>
+                    <div className="row">
+                        <div className="column">
+                            {this.data.game.dice.toString()}
+                        </div>
+                        <div className="column">
+                            <div className={'ui ' + (this.data.game.turn % 2 ? 'purple' : 'blue') + ' label'}>
+                                {this.data.game.turn}
+                            </div>
+                        </div>
+                        <div className="column">
+                            <Broken color={0} count={this.data.game.broken[0]} />
+                            <Broken color={1} count={this.data.game.broken[1]} />
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
