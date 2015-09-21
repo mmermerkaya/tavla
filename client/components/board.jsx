@@ -35,39 +35,45 @@ Board = React.createClass({
     cellClickHandler(cellId) {
         console.log(cellId);
 
-        if (this.getCellState(cellId) === 'idle') {
-            if (this.data.game.board[cellId].color === this.data.game.turn % 2) {
-                console.log('selected ' + cellId);
-                var moveable = [];
-                var dir = this.data.game.turn % 2 ? 1: -1;
-                this.data.game.dice.forEach(function(die) {
-                    var targetCell = cellId + (die * dir);
-                    if (targetCell >= 0 && targetCell < 24 &&
-                        (this.data.game.board[targetCell].color !== (this.data.game.turn+1) % 2 ||
-                            (this.data.game.board[targetCell].color === (this.data.game.turn+1) % 2 &&
-                            this.data.game.board[targetCell].count === 1))) {
-                        moveable.push(targetCell);
-                    }
-                }.bind(this));
+        //If player can move
+        if (this.data.game.broken[this.data.game.turn % 2] === 0) {
+            //If player clicked on an idle cell
+            if (this.getCellState(cellId) === 'idle') {
+                if (this.data.game.board[cellId].color === this.data.game.turn % 2) {
+                    console.log('selected ' + cellId);
+                    var moveable = [];
+                    var dir = this.data.game.turn % 2 ? 1: -1;
+                    this.data.game.dice.forEach(function(die) {
+                        var targetCell = cellId + (die * dir);
+                        if (targetCell >= 0 && targetCell < 24 &&
+                            (this.data.game.board[targetCell].color !== (this.data.game.turn+1) % 2 ||
+                                (this.data.game.board[targetCell].color === (this.data.game.turn+1) % 2 &&
+                                this.data.game.board[targetCell].count === 1))) {
+                            moveable.push(targetCell);
+                        }
+                    }.bind(this));
 
-                this.setState({
-                    selected: cellId,
-                    moveable: moveable
-                });
+                    this.setState({
+                        selected: cellId,
+                        moveable: moveable
+                    });
+                }
+                else {
+                    this.deselect();
+                }
             }
-            else if(this.state.selected !== null) {
-                console.log('deselected ' + this.state.selected);
+            else {
+                //If player clicked on a moveable cell
+                if (this.getCellState(cellId) === 'moveable') {
+                    console.log('moving ' + this.state.selected + ' to ' + cellId);
+                    Meteor.call('movePiece', FlowRouter.getParam('gameId'), this.state.selected, cellId);
+                }
                 this.deselect();
             }
         }
-        else if (this.getCellState(cellId) === 'selected') {
-            console.log('deselected ' + cellId);
-            this.deselect();
-        }
-        else if (this.getCellState(cellId) === 'moveable') {
-            console.log('moving ' + this.state.selected + ' to ' + cellId);
-            Meteor.call('movePiece', FlowRouter.getParam('gameId'), this.state.selected, cellId);
-            this.deselect();
+        //if player has broken pieces
+        else {
+
         }
     },
 
