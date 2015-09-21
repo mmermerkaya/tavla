@@ -120,10 +120,7 @@ Meteor.methods({
             board: board,
             dice: Meteor.call('rollDice'),
             turn: 0,
-            broken: {
-                color: -1,
-                count: 0
-            }
+            broken: [0, 0]
         });
     }
 });

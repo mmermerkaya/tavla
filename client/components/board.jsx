@@ -112,7 +112,8 @@ Board = React.createClass({
                 <br />
                 Turn: {this.data.game.turn}
                 <br />
-                Broken: <Broken data={this.data.game.broken}/>
+                Broken 0: <Broken color={0} count={this.data.game.broken[0]} />
+                Broken 1: <Broken color={1} count={this.data.game.broken[1]} />
             </div>
         );
     }
