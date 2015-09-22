@@ -7,9 +7,50 @@ Meteor.methods({
         return dice;
     },
 
-    newTurn: function(id) {
-        var dice = Meteor.call('rollDice');
-        Games.update({_id: id}, {$set: {'dice': dice}, $inc: {'turn': 1}});
+    checkTurn: function(id) {
+        var game = Games.findOne({_id: id});
+        console.log(game.turn, game.dice);
+
+        var moveAvailable = false;
+        if (game.dice.length !== 0) {
+            if (game.broken[game.turn % 2]) {
+                for (var i = 0; i < 6; i++) {
+                    //cell that can be placed to with die roll "i"
+                    var cellId = game.turn % 2 ? i : 23-i;
+                    if (game.dice.indexOf(i+1) !== -1 && //cell is covered by dice and
+                        (game.board[cellId].color !== (game.turn+1) % 2 || //color isn't opponent's or
+                        game.board[cellId].count === 1)) { //there's only one piece
+                        moveAvailable = true;
+                        break;
+                    }
+                }
+            }
+            else {
+                for (var i = 0; i < 24; i++) {
+                    if (game.board[i].color === (game.turn+1)%2) {
+                        for (var j = 0; j < game.dice.length; j++) {
+                            //cell that can be moved from "i" with die roll "j"
+                            var cellId = i + game.dice[j] * (game.turn % 2 ? 1 : -1);
+                            console.log(cellId)
+                            if (cellId >= 0 && cellId < 24 && //cell is within game boundaries
+                                (game.board[cellId].color !== (game.turn+1) % 2 || //color isn't opponent's or
+                                game.board[cellId].count === 1)) { //there's only one piece
+                                moveAvailable = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!moveAvailable) {
+            //new turn
+            var dice = Meteor.call('rollDice');
+            Games.update({_id: id}, {$set: {'dice': dice}, $inc: {'turn': 1}});
+
+            Meteor.call('checkTurn', id);
+        }
     },
 
     newGame: function() {
