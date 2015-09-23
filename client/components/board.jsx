@@ -156,11 +156,17 @@ Board = React.createClass({
                 </div>
                 <div className="ui centered grid">
                     <div className="row">
+                        <div className="column">Player</div>
                         <div className="column">Dice</div>
                         <div className="column">Turn</div>
                         <div className="column">Broken</div>
                     </div>
                     <div className="row">
+                        <div className="column">
+                            <div className={'ui ' + (this.data.game.players.indexOf(this.data.userId) ? 'purple' : 'blue') + ' label'}>
+                                {this.data.game.players.indexOf(this.data.userId)}
+                            </div>
+                        </div>
                         <div className="column">
                             {this.data.game.dice.toString()}
                         </div>
