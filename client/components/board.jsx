@@ -105,6 +105,10 @@ Board = React.createClass({
     },
 
     getCellState(cellId) {
+        if (this.data.game.players.indexOf(this.data.userId) !== this.data.game.turn % 2) {
+            return 'idle';
+        }
+
         if (this.data.game.broken[this.data.game.turn % 2] === 0) {
             if (cellId === this.state.selected) {
                 return 'selected';
