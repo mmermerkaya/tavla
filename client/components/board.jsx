@@ -142,8 +142,18 @@ Board = React.createClass({
 
     render() {
         //if user isn't part of the game
-        if(this.data.game.players.indexOf(this.data.userId) === -1) {
+        if (this.data.game.players.indexOf(this.data.userId) === -1) {
             return null;
+        }
+
+        if (this.data.game.players.length < 2) {
+            return (
+                <div className="ui text container">
+                    <div className="ui centered red label">
+                        Waiting for opponent.
+                    </div>
+                </div>
+            );
         }
 
         return (
