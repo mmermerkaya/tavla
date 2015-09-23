@@ -1,4 +1,12 @@
 Meteor.methods({
+    joinGame: function(id) {
+        var game = Games.findOne({_id: id});
+
+        if (game.players[0] !== Meteor.userId() && game.players.length === 1) {
+            Games.update({_id: id}, {$push: {'players': Meteor.userId()}});
+        }
+    },
+
     rollDice: function() {
         var dice = [Math.ceil(Random.fraction()*6), Math.ceil(Random.fraction()*6)];
         if (dice[0] === dice[1]) {
@@ -9,7 +17,6 @@ Meteor.methods({
 
     checkTurn: function(id) {
         var game = Games.findOne({_id: id});
-        console.log(game.turn, game.dice);
 
         var moveAvailable = false;
         if (game.dice.length !== 0) {
@@ -31,7 +38,6 @@ Meteor.methods({
                         for (var j = 0; j < game.dice.length; j++) {
                             //cell that can be moved from "i" with die roll "j"
                             var cellId = i + game.dice[j] * (game.turn % 2 ? 1 : -1);
-                            console.log(cellId)
                             if (cellId >= 0 && cellId < 24 && //cell is within game boundaries
                                 (game.board[cellId].color !== (game.turn+1) % 2 || //color isn't opponent's or
                                 game.board[cellId].count === 1)) { //there's only one piece
@@ -161,7 +167,8 @@ Meteor.methods({
             board: board,
             dice: Meteor.call('rollDice'),
             turn: 0,
-            broken: [0, 0]
+            broken: [0, 0],
+            players: [Meteor.userId()]
         });
     }
 });

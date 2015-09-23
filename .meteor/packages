@@ -9,7 +9,6 @@ insecure
 underscore
 kadira:flow-router
 artwells:accounts-guest
-msavin:mongol
 aldeed:collection2
 react
 kadira:react-layout

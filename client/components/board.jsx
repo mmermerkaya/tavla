@@ -2,10 +2,11 @@ Board = React.createClass({
     // This mixin makes the getMeteorData method work
     mixins: [ReactMeteorData],
 
-    // Loads items from the Tasks collection and puts them on this.data.tasks
+    // Loads items from the Games collection and puts them on this.data.game
     getMeteorData() {
         return {
-            game: Games.findOne({_id: FlowRouter.getParam('gameId')})
+            game: Games.findOne({_id: FlowRouter.getParam('gameId')}),
+            userId: Meteor.userId()
         }
     },
 
@@ -15,24 +16,54 @@ Board = React.createClass({
         };
     },
 
+    componentWillMount() {
+        if (this.data.game.players.indexOf(this.data.userId) === -1 && this.data.game.players.length === 1) {
+            Meteor.call('joinGame', this.data.game._id);
+        }
+    },
+
     topLeftRow() {
-        return this.data.game.board.slice(12, 18);
+        if (this.data.game.players[0] === this.data.userId) {
+            return this.data.game.board.slice(12, 18);
+        }
+        else if (this.data.game.players[1] === this.data.userId) {
+            return this.data.game.board.slice(6, 12).reverse();
+        }
     },
 
     topRightRow() {
-        return this.data.game.board.slice(18, 24);
+        if (this.data.game.players[0] === this.data.userId) {
+            return this.data.game.board.slice(18, 24);
+        }
+        else if (this.data.game.players[1] === this.data.userId) {
+            return this.data.game.board.slice(0, 6).reverse();
+        }
     },
 
     bottomLeftRow() {
-        return this.data.game.board.slice(6, 12).reverse();
+        if (this.data.game.players[0] === this.data.userId) {
+            return this.data.game.board.slice(6, 12).reverse();
+        }
+        else if (this.data.game.players[1] === this.data.userId) {
+            return this.data.game.board.slice(12, 18);
+        }
     },
 
     bottomRightRow() {
-        return this.data.game.board.slice(0, 6).reverse();
+        if (this.data.game.players[0] === this.data.userId) {
+            return this.data.game.board.slice(0, 6).reverse();
+        }
+        else if (this.data.game.players[1] === this.data.userId) {
+            return this.data.game.board.slice(18, 24);
+        }
     },
 
     cellClickHandler(cellId) {
         console.log(cellId);
+
+        if (this.data.game.players.indexOf(this.data.userId) !== this.data.game.turn % 2) {
+            return;
+        }
 
         //If player can move
         if (this.data.game.broken[this.data.game.turn % 2] === 0) {
@@ -53,7 +84,7 @@ Board = React.createClass({
                 //If player clicked on a moveable cell
                 if (this.getCellState(cellId) === 'moveable') {
                     console.log('moving ' + this.state.selected + ' to ' + cellId);
-                    Meteor.call('movePiece', FlowRouter.getParam('gameId'), this.state.selected, cellId);
+                    Meteor.call('movePiece', this.data.game._id, this.state.selected, cellId);
                 }
                 this.deselect();
             }
@@ -62,7 +93,7 @@ Board = React.createClass({
         else {
             if (this.getCellState(cellId) === 'moveable') {
                 console.log('moving ' + this.state.selected + ' to ' + cellId);
-                Meteor.call('putPiece', FlowRouter.getParam('gameId'), cellId);
+                Meteor.call('putPiece', this.data.game._id, cellId);
             }
         }
     },
@@ -110,6 +141,11 @@ Board = React.createClass({
     },
 
     render() {
+        //if user isn't part of the game
+        if(this.data.game.players.indexOf(this.data.userId) === -1) {
+            return null;
+        }
+
         return (
             <div className="ui text container">
                 <div className="ui twelve column centered grid">

@@ -4,7 +4,6 @@ LandingPage = React.createClass({
             if (error) {
                 console.log('error', error);
             }
-            console.log(result);
             FlowRouter.go('/game/' + result);
         });
     },

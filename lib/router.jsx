@@ -6,6 +6,10 @@ FlowRouter.route('/', {
 
 FlowRouter.route('/game/:gameId', {
     action: function() {
-        ReactLayout.render(App, {content: <Board />});
+        Tracker.autorun(function() {
+            if (Meteor.userId()) {
+                ReactLayout.render(App, {content: <Board />});
+            }
+        })
     }
 });
