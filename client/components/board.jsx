@@ -105,6 +105,7 @@ Board = React.createClass({
     },
 
     getCellState(cellId) {
+        //If it's not local player's turn, all cells default to idle.
         if (this.data.game.players.indexOf(this.data.userId) !== this.data.game.turn % 2) {
             return 'idle';
         }
@@ -152,10 +153,8 @@ Board = React.createClass({
 
         if (this.data.game.players.length < 2) {
             return (
-                <div className="ui text container">
-                    <div className="ui centered red label">
-                        Waiting for opponent.
-                    </div>
+                <div className="ui active text loader">
+                    Waiting for opponent.
                 </div>
             );
         }
