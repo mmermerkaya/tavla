@@ -36,7 +36,7 @@ Meteor.methods({
             }
             else {
                 for (var i = 0; i < 24; i++) {
-                    if (game.board[i].color === (game.turn+1)%2) {
+                    if (game.board[i].color === game.turn % 2) {
                         for (var j = 0; j < game.dice.length; j++) {
                             //cell that can be moved from "i" with die roll "j"
                             var cellId = i + game.dice[j] * (game.turn % 2 ? 1 : -1);
