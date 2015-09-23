@@ -1,3 +1,4 @@
+//Methods without latency compensation
 Meteor.methods({
     joinGame: function(id) {
         var game = Games.findOne({_id: id});
@@ -20,6 +21,7 @@ Meteor.methods({
 
         var moveAvailable = false;
         if (game.dice.length !== 0) {
+            //if player has broken pieces
             if (game.broken[game.turn % 2]) {
                 for (var i = 0; i < 6; i++) {
                     //cell that can be placed to with die roll "i"
@@ -168,7 +170,8 @@ Meteor.methods({
             dice: Meteor.call('rollDice'),
             turn: 0,
             broken: [0, 0],
-            players: [Meteor.userId()]
+            players: [Meteor.userId()],
+            collected: [0, 0]
         });
     }
 });
