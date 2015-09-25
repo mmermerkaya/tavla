@@ -136,19 +136,19 @@ Board = React.createClass({
         return 'idle';
     },
 
-    renderCell(cell, id) {
+    renderCellTop(cell, key) {
         cell.state = this.getCellState(cell.id);
         return (
-            <div className="column" key={id}>
+            <div className="column" key={key}>
                 <Cell cellData={cell} clickHandler={this.cellClickHandler} />
             </div>
         );
     },
 
-    renderCellBottom(cell, id) {
+    renderCellBottom(cell, key) {
         cell.state = this.getCellState(cell.id);
         return (
-            <div className="column" key={id}>
+            <div className="column" key={key}>
                 <Cell cellData={cell} clickHandler={this.cellClickHandler} isBottom='true' />
             </div>
         );
@@ -172,9 +172,9 @@ Board = React.createClass({
             <div className="ui text container">
 
                 <div className="ui fourteen column centered grid board-image">
-                    {this.topLeftRow().map(this.renderCell)}
+                    {this.topLeftRow().map(this.renderCellTop)}
                     <div className="ui two wide column"/>
-                    {this.topRightRow().map(this.renderCell)}
+                    {this.topRightRow().map(this.renderCellTop)}
                     {this.bottomLeftRow().map(this.renderCellBottom)}
                     <div className="ui two wide column"/>
                     {this.bottomRightRow().map(this.renderCellBottom)}
