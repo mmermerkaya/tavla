@@ -12,7 +12,7 @@ Cell = React.createClass({
             case 'idle':
                 switch (this.props.cellData.color) {
                     case -1:
-                        return 'white';
+                        return 'transparent';
                     case 0:
                         return 'blue';
                     case 1:
@@ -23,7 +23,10 @@ Cell = React.createClass({
     },
 
     render() {
-        var className = 'ui ' + this.getColor() + ' label';
+        var className = 'circular ui large ' + this.getColor() + ' label';
+        if(this.props.isBottom){
+            className += ' section-bottom';
+        }
 
         var content = [];
         for (var i = this.props.cellData.count; i > 0; i--) {
