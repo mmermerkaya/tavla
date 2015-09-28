@@ -1,3 +1,7 @@
+Meteor.startup(function() {
+    AccountsGuest.anonymous = true;
+});
+
 //Methods without latency compensation
 Meteor.methods({
     joinGame: function(id) {
