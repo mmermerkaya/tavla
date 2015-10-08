@@ -171,13 +171,15 @@ Board = React.createClass({
         return (
             <div className="ui text container">
 
-                <div className="ui fourteen column centered grid board-image">
-                    {this.topLeftRow().map(this.renderCellTop)}
-                    <div className="ui two wide column"/>
-                    {this.topRightRow().map(this.renderCellTop)}
-                    {this.bottomLeftRow().map(this.renderCellBottom)}
-                    <div className="ui two wide column"/>
-                    {this.bottomRightRow().map(this.renderCellBottom)}
+                <div className="board-image">
+                    <div className="ui fourteen column centered grid board">
+                        {this.topLeftRow().map(this.renderCellTop)}
+                        <div className="ui two wide column"/>
+                        {this.topRightRow().map(this.renderCellTop)}
+                        {this.bottomLeftRow().map(this.renderCellBottom)}
+                        <div className="ui two wide column"/>
+                        {this.bottomRightRow().map(this.renderCellBottom)}
+                    </div>
                 </div>
 
                 <div className="ui centered grid">
