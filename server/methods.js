@@ -4,11 +4,11 @@ Meteor.startup(function() {
 
 //Methods without latency compensation
 Meteor.methods({
-    joinGame: function(id) {
-        var game = Games.findOne({_id: id});
+    joinGame: function(gameId) {
+        var game = Games.findOne({_id: gameId});
 
         if (game.players[0] !== Meteor.userId() && game.players.length === 1) {
-            Games.update({_id: id}, {$push: {'players': Meteor.userId()}});
+            Games.update({_id: gameId}, {$push: {'players': Meteor.userId()}});
         }
     },
 
@@ -20,8 +20,10 @@ Meteor.methods({
         return dice;
     },
 
-    checkTurn: function(id) {
-        var game = Games.findOne({_id: id});
+    //Check if turn is finished
+    //Called after every move
+    checkTurn: function(gameId) {
+        var game = Games.findOne({_id: gameId});
 
         var moveAvailable = false;
         if (game.dice.length !== 0) {
@@ -59,9 +61,9 @@ Meteor.methods({
         if (!moveAvailable) {
             //new turn
             var dice = Meteor.call('rollDice');
-            Games.update({_id: id}, {$set: {'dice': dice}, $inc: {'turn': 1}});
+            Games.update({_id: gameId}, {$set: {'dice': dice}, $inc: {'turn': 1}});
 
-            Meteor.call('checkTurn', id);
+            Meteor.call('checkTurn', gameId);
         }
     },
 

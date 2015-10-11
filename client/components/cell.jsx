@@ -30,7 +30,7 @@ Cell = React.createClass({
 
         var content = [];
         for (var i = this.props.cellData.count; i > 0; i--) {
-            content.push(<span>X<br /></span>);
+            content.push(<span key={i}>X<br /></span>);
         };
 
         return (
