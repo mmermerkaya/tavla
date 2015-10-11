@@ -13,11 +13,11 @@
 }
 
 .section-bottom{
-	bottom: 5px;
-	position: absolute;
+    bottom: 5px;
+    position: absolute;
 }
 
 .transparent{
-	background-color: white;
-	opacity: 0;
+    background-color: white;
+    opacity: 0;
 }
