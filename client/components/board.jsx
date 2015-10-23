@@ -98,6 +98,14 @@ Board = React.createClass({
         }
     },
 
+    collectionClickHandler(color) {
+        if (this.data.game.broken[this.data.game.turn % 2] === 0 && this.getCollectionState(color) === 'moveable') {
+            console.log('collecting ' + this.state.selected);
+            Meteor.call('collectPiece', this.data.game._id, this.state.selected);
+            this.deselect();
+        }
+    },
+
     deselect() {
         this.setState({
             selected: null
@@ -110,6 +118,7 @@ Board = React.createClass({
             return 'idle';
         }
 
+        //no broken pieces
         if (this.data.game.broken[this.data.game.turn % 2] === 0) {
             if (cellId === this.state.selected) {
                 return 'selected';
@@ -119,7 +128,7 @@ Board = React.createClass({
                 var val = (this.state.selected - cellId) * (this.data.game.turn % 2 ? -1 : 1);
                 if (this.data.game.dice.indexOf(val) !== -1 && //Distance is covered by dice and
                     (this.data.game.board[cellId].color !== (this.data.game.turn+1) % 2 || //color isn't opponent's or
-                    this.data.game.board[cellId].count === 1)) { //there's only one piece
+                    this.data.game.board[cellId].count === 1)) { //there's only one piece (breakable)
                     return 'moveable';
                 }
             }
@@ -132,6 +141,27 @@ Board = React.createClass({
                 this.data.game.board[cellId].count === 1)) { //there's only one piece
                 return 'moveable';
             }
+        }
+        return 'idle';
+    },
+
+    getCollectionState(color) {
+        //If it's not local player's turn, all cells default to idle.
+        if (color !== this.data.game.turn % 2 || this.data.game.players.indexOf(this.data.userId) !== this.data.game.turn % 2 || this.state.selected === null) {
+            return 'idle';
+        }
+        var self = this;
+        function cellCheck(cell) {
+            return cell.color !== self.data.game.turn % 2;
+        };
+
+        var a = this.data.game.turn % 2 === 0 ? this.state.selected + 1 : 18;
+        var b = this.data.game.turn % 2 === 0 ? 6 : this.state.selected;
+        var die = this.data.game.turn % 2 === 0 ? this.state.selected+1 : 24-this.state.selected;
+
+        if (_.every(this.data.game.board.slice(0 + ((this.data.game.turn + 1) % 2) * 6, 18 + ((this.data.game.turn + 1) % 2) * 6), cellCheck)
+            && ((this.data.game.dice.indexOf(die) !== -1) || (_.max(this.data.game.dice) > die && _.every(this.data.game.board.slice(a, b), cellCheck)))) {
+            return 'moveable';
         }
         return 'idle';
     },
@@ -188,6 +218,7 @@ Board = React.createClass({
                         <div className="column">Dice</div>
                         <div className="column">Turn</div>
                         <div className="column">Broken</div>
+                        <div className="column">Collected</div>
                     </div>
                     <div className="row">
                         <div className="column">
@@ -206,6 +237,10 @@ Board = React.createClass({
                         <div className="column">
                             <Broken color={0} count={this.data.game.broken[0]} />
                             <Broken color={1} count={this.data.game.broken[1]} />
+                        </div>
+                        <div className="column">
+                            <Collected state={this.getCollectionState(0)} color={0} count={this.data.game.collected[0]} clickHandler={this.collectionClickHandler} />
+                            <Collected state={this.getCollectionState(1)} color={1} count={this.data.game.collected[1]} clickHandler={this.collectionClickHandler}/>
                         </div>
                     </div>
                 </div>
