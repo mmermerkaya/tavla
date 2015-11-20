@@ -1,15 +1,6 @@
-FlowRouter.route('/', {
-    action: function() {
-        ReactLayout.render(App, {content: <LandingPage />});
-    }
-});
-
-FlowRouter.route('/game/:gameId', {
-    action: function() {
-        Tracker.autorun(function() {
-            if (Meteor.userId()) {
-                ReactLayout.render(App, {content: <Board />});
-            }
-        })
-    }
-});
+Reaktor.init(
+    <Router>
+      <Route path="/" layout={App} content={LandingPage} />
+      <Route path="/game/:gameId" layout={App} content={Board} />
+    </Router>
+);
