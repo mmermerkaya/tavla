@@ -169,7 +169,7 @@ Board = React.createClass({
     renderCellTop(cell, key) {
         cell.state = this.getCellState(cell.id);
         return (
-            <div className="column" key={key}>
+            <div className="cell top" key={key}>
                 <Cell cellData={cell} clickHandler={this.cellClickHandler} />
             </div>
         );
@@ -178,72 +178,63 @@ Board = React.createClass({
     renderCellBottom(cell, key) {
         cell.state = this.getCellState(cell.id);
         return (
-            <div className="column" key={key}>
-                <Cell cellData={cell} clickHandler={this.cellClickHandler} isBottom='true' />
+            <div className="cell bottom" key={key}>
+                <Cell cellData={cell} clickHandler={this.cellClickHandler} />
             </div>
         );
     },
 
     render() {
-        //if user isn't part of the game
+        // If user isn't part of the game
+        // TODO: Redirect and show error message
         if (this.data.game.players.indexOf(this.data.userId) === -1) {
             return null;
         }
 
+        // Waiting for opponent
         if (this.data.game.players.length < 2) {
             return (
-                <div className="ui active text loader">
-                    Waiting for opponent.
-                </div>
+                <SpinnerView />
             );
         }
 
         return (
-            <div className="ui text container">
-
-                <div className="board-image">
-                    <div className="ui fourteen column centered grid board">
-                        {this.topLeftRow().map(this.renderCellTop)}
-                        <div className="ui two wide column"/>
-                        {this.topRightRow().map(this.renderCellTop)}
-                        {this.bottomLeftRow().map(this.renderCellBottom)}
-                        <div className="ui two wide column"/>
-                        {this.bottomRightRow().map(this.renderCellBottom)}
-                    </div>
-                </div>
-
-                <div className="ui centered grid">
-                    <div className="row">
-                        <div className="column">Player</div>
-                        <div className="column">Dice</div>
-                        <div className="column">Turn</div>
-                        <div className="column">Broken</div>
-                        <div className="column">Collected</div>
-                    </div>
-                    <div className="row">
-                        <div className="column">
-                            <div className={'ui ' + (this.data.game.players.indexOf(this.data.userId) ? 'purple' : 'blue') + ' label'}>
-                                {this.data.game.players.indexOf(this.data.userId)}
-                            </div>
+            <div className="game">
+                <div className="board-bg">
+                    <div className="board">
+                        <div className="row">
+                            {this.topLeftRow().map(this.renderCellTop)}
+                            <div className="separator" />
+                            {this.topRightRow().map(this.renderCellTop)}
                         </div>
-                        <div className="column">
-                            {this.data.game.dice.toString()}
-                        </div>
-                        <div className="column">
-                            <div className={'ui ' + (this.data.game.turn % 2 ? 'purple' : 'blue') + ' label'}>
-                                {this.data.game.turn}
-                            </div>
-                        </div>
-                        <div className="column">
-                            <Broken color={0} count={this.data.game.broken[0]} />
-                            <Broken color={1} count={this.data.game.broken[1]} />
-                        </div>
-                        <div className="column">
-                            <Collected state={this.getCollectionState(0)} color={0} count={this.data.game.collected[0]} clickHandler={this.collectionClickHandler} />
-                            <Collected state={this.getCollectionState(1)} color={1} count={this.data.game.collected[1]} clickHandler={this.collectionClickHandler}/>
+                        <div className="row">
+                            {this.bottomLeftRow().map(this.renderCellBottom)}
+                            <div className="separator" />
+                            {this.bottomRightRow().map(this.renderCellBottom)}
                         </div>
                     </div>
                 </div>
+                <br />
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <td>Player</td>
+                            <td>Dice</td>
+                            <td>Turn</td>
+                            <td>Broken</td>
+                            <td>Collected</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{this.data.game.players.indexOf(this.data.userId)}</td>
+                            <td>{this.data.game.dice.toString()}</td>
+                            <td>{this.data.game.turn}</td>
+                            <td>{this.data.game.broken[0]} / {this.data.game.broken[1]}</td>
+                            <td>{this.data.game.collected[0]} / {this.data.game.collected[1]}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         );
     }

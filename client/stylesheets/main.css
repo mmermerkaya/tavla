@@ -1,20 +1,52 @@
-.board-image{
-    background-image: url(backgammonBg2.jpg);
+div {
+    display: block;
+}
+
+.wrapper {
+    padding-top: 70px;
+}
+
+.board-bg{
+    margin: 0 auto;
+    background-image: url(backgammonBg.jpg);
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
-    color: white;
-    height: 660px;
-    padding: 30px;
+    width: 800px;
+    height: 630px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .board {
-    height: 100%;
+    width: 630px;
+    height: 580px;
 }
 
-.section-bottom{
-    bottom: 5px;
-    position: absolute;
+.board .row {
+    height: 290px;
+    margin: 0;
+    display: flex;
+    overflow: auto;
+}
+
+.board .cell {
+    width: 45px;
+    display: flex;
+    justify-content: center;
+}
+
+.board .separator {
+    width: 90px;
+}
+
+.top {
+    align-items: flex-start;
+}
+
+.bottom {
+    align-items: flex-end;
 }
 
 .transparent{

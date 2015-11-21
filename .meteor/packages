@@ -24,7 +24,11 @@ kadira:flow-router
 kadira:reaktor
 artwells:accounts-guest
 random
-semantic:ui-css
+
+# Visual
+twbs:bootstrap
+fortawesome:fontawesome
+dpraburaj:react-spin
 
 # Helpers
 underscore

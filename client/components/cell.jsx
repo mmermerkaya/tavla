@@ -23,18 +23,21 @@ Cell = React.createClass({
     },
 
     render() {
-        var className = 'circular ui large ' + this.getColor() + ' label';
-        if(this.props.isBottom){
-            className += ' section-bottom';
-        }
+        var style = {
+            color: this.getColor()
+        };
 
         var content = [];
         for (var i = this.props.cellData.count; i > 0; i--) {
-            content.push(<span key={i}>X<br /></span>);
+            content.push(<span><i className="fa fa-dot-circle-o fa-3x" /><br /></span>);
         };
 
+        if (!this.props.cellData.count) {
+            content = <i className="fa fa-times fa-3x" />;
+        }
+
         return (
-            <div className={className} onClick={this.clickHandler}>
+            <div style={style} onClick={this.clickHandler}>
                 {content}
             </div>
         )

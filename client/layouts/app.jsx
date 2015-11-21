@@ -1,14 +1,25 @@
 App = React.createClass({
     render() {
         return (
-            <div className="ui container">
-                <div className="ui menu">
-                    <div className="header item">
-                        Tavla
+            <div className="wrapper">
+                <nav className="navbar navbar-default navbar-fixed-top">
+                    <div className="container">
+                        <div className="navbar-header">
+                            <a className="navbar-brand" href="#">Tavla</a>
+                        </div>
+                        <div className="navbar-collapse collapse">
+                            <ul className="nav navbar-nav">
+                                <li className="active"><a href="#">Home</a></li>
+                                <li><a href="#about">About</a></li>
+                                <li><a href="#contact">Contact</a></li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
+                </nav>
 
-                {this.props.content}
+                <div className="container">
+                    {this.props.content}
+                </div>
             </div>
         );
     }
