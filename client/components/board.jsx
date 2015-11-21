@@ -22,54 +22,37 @@ Board = React.createClass({
         }
     },
 
-    topLeftRow() {
+    // Returns cells from a quarter of the board.
+    // Index goes counter clockwise and starts at bottom right.
+    getSegment(index) {
+        var result = [];
         if (this.data.game.players[0] === this.data.userId) {
-            return this.data.game.board.slice(12, 18);
+            result = this.data.game.board.slice(index * 6, (index + 1) * 6);
+            if (index < 2) {
+                result = result.reverse();
+            }
         }
         else if (this.data.game.players[1] === this.data.userId) {
-            return this.data.game.board.slice(6, 12).reverse();
+            result = this.data.game.board.slice((3 - index) * 6, (3 - index + 1) * 6);
+            if (index >= 2) {
+                result = result.reverse();
+            }
         }
-    },
-
-    topRightRow() {
-        if (this.data.game.players[0] === this.data.userId) {
-            return this.data.game.board.slice(18, 24);
-        }
-        else if (this.data.game.players[1] === this.data.userId) {
-            return this.data.game.board.slice(0, 6).reverse();
-        }
-    },
-
-    bottomLeftRow() {
-        if (this.data.game.players[0] === this.data.userId) {
-            return this.data.game.board.slice(6, 12).reverse();
-        }
-        else if (this.data.game.players[1] === this.data.userId) {
-            return this.data.game.board.slice(12, 18);
-        }
-    },
-
-    bottomRightRow() {
-        if (this.data.game.players[0] === this.data.userId) {
-            return this.data.game.board.slice(0, 6).reverse();
-        }
-        else if (this.data.game.players[1] === this.data.userId) {
-            return this.data.game.board.slice(18, 24);
-        }
+        return result;
     },
 
     cellClickHandler(cellId) {
-        console.log(cellId);
+        var player = this.data.game.players.indexOf(this.data.userId);
 
-        if (this.data.game.players.indexOf(this.data.userId) !== this.data.game.turn % 2) {
+        if (player !== this.data.game.turn % 2) {
             return;
         }
 
-        //If player can move
-        if (this.data.game.broken[this.data.game.turn % 2] === 0) {
-            //If player clicked on an idle cell
+        // If player can move
+        if (this.data.game.broken[player] === 0) {
+            // If player clicked on an idle cell
             if (this.getCellState(cellId) === 'idle') {
-                if (this.data.game.board[cellId].color === this.data.game.turn % 2) {
+                if (this.data.game.board[cellId].color === player) {
                     console.log('selected ' + cellId);
 
                     this.setState({
@@ -81,7 +64,7 @@ Board = React.createClass({
                 }
             }
             else {
-                //If player clicked on a moveable cell
+                // If player clicked on a moveable cell
                 if (this.getCellState(cellId) === 'moveable') {
                     console.log('moving ' + this.state.selected + ' to ' + cellId);
                     Meteor.call('movePiece', this.data.game._id, this.state.selected, cellId);
@@ -89,7 +72,7 @@ Board = React.createClass({
                 this.deselect();
             }
         }
-        //if player has broken pieces
+        // If player has broken pieces
         else {
             if (this.getCellState(cellId) === 'moveable') {
                 console.log('moving ' + this.state.selected + ' to ' + cellId);
@@ -98,8 +81,12 @@ Board = React.createClass({
         }
     },
 
-    collectionClickHandler(color) {
-        if (this.data.game.broken[this.data.game.turn % 2] === 0 && this.getCollectionState(color) === 'moveable') {
+    collectionClickHandler() {
+        var player = this.data.game.players.indexOf(this.data.userId);
+
+        if (player === this.data.game.turn % 2 &&
+            this.data.game.broken[player] === 0 &&
+            this.getCollectionState() === 'moveable') {
             console.log('collecting ' + this.state.selected);
             Meteor.call('collectPiece', this.data.game._id, this.state.selected);
             this.deselect();
@@ -113,72 +100,68 @@ Board = React.createClass({
     },
 
     getCellState(cellId) {
-        //If it's not local player's turn, all cells default to idle.
-        if (this.data.game.players.indexOf(this.data.userId) !== this.data.game.turn % 2) {
+        var player = this.data.game.players.indexOf(this.data.userId);
+
+        // If it's not local player's turn, all cells default to idle.
+        if (player !== this.data.game.turn % 2) {
             return 'idle';
         }
 
-        //no broken pieces
-        if (this.data.game.broken[this.data.game.turn % 2] === 0) {
+        // No broken pieces
+        if (this.data.game.broken[player] === 0) {
             if (cellId === this.state.selected) {
                 return 'selected';
             }
             else if (this.state.selected !== null) {
-                //required die value for this move
-                var val = (this.state.selected - cellId) * (this.data.game.turn % 2 ? -1 : 1);
+                // Required die value for this move
+                var val = (this.state.selected - cellId) * (player ? -1 : 1);
                 if (this.data.game.dice.indexOf(val) !== -1 && //Distance is covered by dice and
-                    (this.data.game.board[cellId].color !== (this.data.game.turn+1) % 2 || //color isn't opponent's or
+                    (this.data.game.board[cellId].color !== (player + 1) % 2 || //color isn't opponent's or
                     this.data.game.board[cellId].count === 1)) { //there's only one piece (breakable)
                     return 'moveable';
                 }
             }
         }
         else {
-            //required die value for this move
-            var val = this.data.game.turn % 2 ? cellId+1 : 24-cellId;
-            if (this.data.game.dice.indexOf(val) !== -1 && //Distance is covered by dice and
-                (this.data.game.board[cellId].color !== (this.data.game.turn+1) % 2 || //color isn't opponent's or
-                this.data.game.board[cellId].count === 1)) { //there's only one piece
+            // Required die value for this move
+            var val = player ? cellId + 1 : 24 - cellId;
+            if (this.data.game.dice.indexOf(val) !== -1 && // Distance is covered by dice and
+                (this.data.game.board[cellId].color !== (player + 1) % 2 || // Color isn't opponent's or
+                this.data.game.board[cellId].count === 1)) { // There's only one piece
                 return 'moveable';
             }
         }
         return 'idle';
     },
 
-    getCollectionState(color) {
-        //If it's not local player's turn, all cells default to idle.
-        if (color !== this.data.game.turn % 2 || this.data.game.players.indexOf(this.data.userId) !== this.data.game.turn % 2 || this.state.selected === null) {
+    getCollectionState() {
+        var player = this.data.game.players.indexOf(this.data.userId);
+
+        // If it's not local player's turn, no collection is possible.
+        if (player !== this.data.game.turn % 2 || this.state.selected === null) {
             return 'idle';
         }
-        var self = this;
+
         function cellCheck(cell) {
-            return cell.color !== self.data.game.turn % 2;
+            return cell.color !== player;
         };
 
-        var a = this.data.game.turn % 2 === 0 ? this.state.selected + 1 : 18;
-        var b = this.data.game.turn % 2 === 0 ? 6 : this.state.selected;
-        var die = this.data.game.turn % 2 === 0 ? this.state.selected+1 : 24-this.state.selected;
+        var a = player === 0 ? this.state.selected + 1 : 18;
+        var b = player === 0 ? 6 : this.state.selected;
+        var die = player === 0 ? this.state.selected+1 : 24-this.state.selected;
 
-        if (_.every(this.data.game.board.slice(0 + ((this.data.game.turn + 1) % 2) * 6, 18 + ((this.data.game.turn + 1) % 2) * 6), cellCheck)
+        if (_.every(this.data.game.board.slice(0 + ((player + 1) % 2) * 6, 18 + ((player + 1) % 2) * 6), cellCheck)
             && ((this.data.game.dice.indexOf(die) !== -1) || (_.max(this.data.game.dice) > die && _.every(this.data.game.board.slice(a, b), cellCheck)))) {
             return 'moveable';
         }
         return 'idle';
     },
 
-    renderCellTop(cell, key) {
+    renderCell(cell, index, row) {
         cell.state = this.getCellState(cell.id);
-        return (
-            <div className="cell top" key={key}>
-                <Cell cellData={cell} clickHandler={this.cellClickHandler} />
-            </div>
-        );
-    },
 
-    renderCellBottom(cell, key) {
-        cell.state = this.getCellState(cell.id);
         return (
-            <div className="cell bottom" key={key}>
+            <div className={"cell " + row} key={index}>
                 <Cell cellData={cell} clickHandler={this.cellClickHandler} />
             </div>
         );
@@ -200,19 +183,25 @@ Board = React.createClass({
 
         return (
             <div className="game">
-                <div className="board-bg">
+                <div className="board-bg centered">
                     <div className="board">
                         <div className="row">
-                            {this.topLeftRow().map(this.renderCellTop)}
+                            {this.getSegment(2).map(function(segment, index) {return this.renderCell(segment, index, "top")}.bind(this))}
                             <div className="separator" />
-                            {this.topRightRow().map(this.renderCellTop)}
+                            {this.getSegment(3).map(function(segment, index) {return this.renderCell(segment, index, "top")}.bind(this))}
                         </div>
                         <div className="row">
-                            {this.bottomLeftRow().map(this.renderCellBottom)}
+                            {this.getSegment(1).map(function(segment, index) {return this.renderCell(segment, index, "bottom")}.bind(this))}
                             <div className="separator" />
-                            {this.bottomRightRow().map(this.renderCellBottom)}
+                            {this.getSegment(0).map(function(segment, index) {return this.renderCell(segment, index, "bottom")}.bind(this))}
                         </div>
                     </div>
+                </div>
+                <br />
+                <div
+                    className={"collect btn btn-" + GetBootstrapColor(this.getCollectionState(this.data.game.turn % 2), this.data.game.turn % 2)}
+                    onClick={this.collectionClickHandler}>
+                    COLLECT THIS
                 </div>
                 <br />
                 <table className="table">
@@ -235,6 +224,8 @@ Board = React.createClass({
                         </tr>
                     </tbody>
                 </table>
+
+
             </div>
         );
     }

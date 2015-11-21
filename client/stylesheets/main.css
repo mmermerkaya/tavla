@@ -48,3 +48,7 @@ div {
 .bottom {
     align-items: flex-end;
 }
+
+.collect.btn {
+    width: 100%;
+}
