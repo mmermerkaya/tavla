@@ -24,35 +24,19 @@ Meteor.methods({
     //Called after every move
     checkTurn: function(gameId) {
         var game = Games.findOne({_id: gameId});
+        var currentPlayer = game.turn % 2;
 
         var moveAvailable = false;
         if (game.dice.length !== 0) {
             //if player has broken pieces
-            if (game.broken[game.turn % 2]) {
-                for (var i = 0; i < 6; i++) {
-                    //cell that can be placed to with die roll "i"
-                    var cellId = game.turn % 2 ? i : 23-i;
-                    if (game.dice.indexOf(i+1) !== -1 && //cell is covered by dice and
-                        (game.board[cellId].color !== (game.turn+1) % 2 || //color isn't opponent's or
-                        game.board[cellId].count === 1)) { //there's only one piece
-                        moveAvailable = true;
-                        break;
-                    }
-                }
+            if (game.broken[currentPlayer]) {
+                moveAvailable = IsPlaceable(gameId);
             }
             else {
                 for (var i = 0; i < 24; i++) {
-                    if (game.board[i].color === game.turn % 2) {
-                        for (var j = 0; j < game.dice.length; j++) {
-                            //cell that can be moved from "i" with die roll "j"
-                            var cellId = i + game.dice[j] * (game.turn % 2 ? 1 : -1);
-                            if (cellId >= 0 && cellId < 24 && //cell is within game boundaries
-                                (game.board[cellId].color !== (game.turn+1) % 2 || //color isn't opponent's or
-                                game.board[cellId].count === 1)) { //there's only one piece
-                                moveAvailable = true;
-                                break;
-                            }
-                        }
+                    if (IsCollectable(gameId, i) || IsMoveable(gameId, i)) {
+                        moveAvailable = true;
+                        break;
                     }
                 }
             }

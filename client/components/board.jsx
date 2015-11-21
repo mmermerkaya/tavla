@@ -113,11 +113,7 @@ Board = React.createClass({
                 return 'selected';
             }
             else if (this.state.selected !== null) {
-                // Required die value for this move
-                var val = (this.state.selected - cellId) * (player ? -1 : 1);
-                if (this.data.game.dice.indexOf(val) !== -1 && //Distance is covered by dice and
-                    (this.data.game.board[cellId].color !== (player + 1) % 2 || //color isn't opponent's or
-                    this.data.game.board[cellId].count === 1)) { //there's only one piece (breakable)
+                if (MoveableTo(this.data.game._id, this.state.selected).indexOf(cellId) !== -1) {
                     return 'moveable';
                 }
             }
