@@ -48,8 +48,3 @@ div {
 .bottom {
     align-items: flex-end;
 }
-
-.transparent{
-    background-color: white;
-    opacity: 0;
-}

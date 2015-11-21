@@ -14,12 +14,12 @@ Cell = React.createClass({
                     case -1:
                         return 'transparent';
                     case 0:
-                        return 'blue';
+                        return 'white';
                     case 1:
-                        return 'purple';
+                        return 'black';
                 }
         }
-        return 'black';
+        return 'purple';
     },
 
     render() {
