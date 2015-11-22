@@ -177,18 +177,24 @@ Board = React.createClass({
             );
         }
 
+        var player = this.data.game.players.indexOf(this.data.userId);
+
         return (
             <div className="game">
                 <div className="board-bg centered">
                     <div className="board">
                         <div className="row">
                             {this.getSegment(2).map(function(segment, index) {return this.renderCell(segment, index, "top")}.bind(this))}
-                            <div className="separator" />
+                            <div className="separator top">
+                                <Cell cellData={{state: 'idle', color: (player + 1) % 2, count: this.data.game.broken[(player + 1) % 2]}} />
+                            </div>
                             {this.getSegment(3).map(function(segment, index) {return this.renderCell(segment, index, "top")}.bind(this))}
                         </div>
                         <div className="row">
                             {this.getSegment(1).map(function(segment, index) {return this.renderCell(segment, index, "bottom")}.bind(this))}
-                            <div className="separator" />
+                            <div className="separator bottom">
+                                <Cell cellData={{state: 'idle', color: player, count: this.data.game.broken[player]}} />
+                            </div>
                             {this.getSegment(0).map(function(segment, index) {return this.renderCell(segment, index, "bottom")}.bind(this))}
                         </div>
                     </div>
@@ -212,7 +218,7 @@ Board = React.createClass({
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{this.data.game.players.indexOf(this.data.userId)}</td>
+                            <td>{player}</td>
                             <td>{this.data.game.dice.toString()}</td>
                             <td>{this.data.game.turn}</td>
                             <td>{this.data.game.broken[0]} / {this.data.game.broken[1]}</td>

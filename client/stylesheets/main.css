@@ -39,6 +39,8 @@ div {
 
 .board .separator {
     width: 90px;
+    display: flex;
+    justify-content: center;
 }
 
 .top {
