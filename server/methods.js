@@ -2,7 +2,7 @@ Meteor.startup(function() {
     AccountsGuest.anonymous = true;
 });
 
-//Methods without latency compensation
+// Methods without latency compensation
 Meteor.methods({
     joinGame: function(gameId) {
         var game = Games.findOne({_id: gameId});
@@ -20,8 +20,8 @@ Meteor.methods({
         return dice;
     },
 
-    //Check if turn is finished
-    //Called after every move
+    // Check if turn is finished
+    // Called after every move
     checkTurn: function(gameId) {
         var game = Games.findOne({_id: gameId});
         var currentPlayer = game.turn % 2;
@@ -43,10 +43,12 @@ Meteor.methods({
         }
 
         if (!moveAvailable) {
-            //new turn
+            // New turn
             var dice = Meteor.call('rollDice');
             Games.update({_id: gameId}, {$set: {'dice': dice}, $inc: {'turn': 1}});
 
+            // Wait 3 seconds before checking if turn will be skipped again.
+            Meteor.sleep(3000);
             Meteor.call('checkTurn', gameId);
         }
     },
