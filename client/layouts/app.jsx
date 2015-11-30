@@ -1,5 +1,21 @@
 App = React.createClass({
+    mixins: [ReactMeteorData],
+
+    getMeteorData() {
+        return {
+            userId: Meteor.userId()
+        }
+    },
+
     render() {
+        var content;
+        if (this.data.userId) {
+            content = this.props.content;
+        }
+        else {
+            content = <SpinnerView />;
+        }
+
         return (
             <div className="wrapper">
                 <nav className="navbar navbar-default navbar-fixed-top">
@@ -21,7 +37,7 @@ App = React.createClass({
                 </nav>
 
                 <div className="container">
-                    {this.props.content}
+                    {content}
                 </div>
             </div>
         );
