@@ -9,7 +9,7 @@ App = React.createClass({
 
     render() {
         var content;
-        if (this.data.userId) {
+        if (this.data && this.data.userId) {
             content = this.props.content;
         }
         else {
