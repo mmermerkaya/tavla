@@ -1,5 +1,5 @@
 Cell = React.createClass({
-    clickHandler(event) {
+    clickHandler() {
         if (this.props.clickHandler) {
             this.props.clickHandler(this.props.cellData.id);
         }
@@ -7,13 +7,13 @@ Cell = React.createClass({
 
     render() {
         var style = {
-            color: GetColor(this.props.cellData.state, this.props.cellData.color)
+            color: getColor(this.props.cellData.state, this.props.cellData.color)
         };
 
         var content = [];
         for (var i = this.props.cellData.count; i > 0; i--) {
             content.push(<span key={i}><i className="fa fa-dot-circle-o fa-3x" /><br /></span>);
-        };
+        }
 
         if (!this.props.cellData.count && this.props.cellData.color === -1) {
             content = <i className="fa fa-times fa-3x" />;
@@ -23,6 +23,6 @@ Cell = React.createClass({
             <div style={style} onClick={this.clickHandler}>
                 {content}
             </div>
-        )
+        );
     }
 });

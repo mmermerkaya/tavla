@@ -8,4 +8,4 @@ About = React.createClass({
             </div>
         );
     }
-})
+});

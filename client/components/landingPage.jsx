@@ -1,5 +1,5 @@
 LandingPage = React.createClass({
-    newGame(event) {
+    newGame() {
         Meteor.call('newGame', function(error, result) {
             if (error) {
                 console.log('error', error);

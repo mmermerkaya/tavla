@@ -5,9 +5,9 @@ Board = React.createClass({
     // Loads items from the Games collection and puts them on this.data.game
     getMeteorData() {
         return {
-            game: Games.findOne({_id: FlowRouter.getParam('gameId')}),
+            game: Games.findOne({_id: this.props.gameId}),
             userId: Meteor.userId()
-        }
+        };
     },
 
     getInitialState() {
@@ -113,7 +113,7 @@ Board = React.createClass({
                 return 'selected';
             }
             else if (this.state.selected !== null) {
-                if (MoveableTo(this.data.game._id, this.state.selected).indexOf(cellId) !== -1) {
+                if (moveableTo(this.data.game._id, this.state.selected).indexOf(cellId) !== -1) {
                     return 'moveable';
                 }
             }
@@ -138,13 +138,13 @@ Board = React.createClass({
             return 'idle';
         }
 
-        function cellCheck(cell) {
+        var cellCheck = function(cell) {
             return cell.color !== player;
         };
 
         var a = player === 0 ? this.state.selected + 1 : 18;
         var b = player === 0 ? 6 : this.state.selected;
-        var die = player === 0 ? this.state.selected+1 : 24-this.state.selected;
+        var die = player === 0 ? this.state.selected + 1 : 24 - this.state.selected;
 
         if (_.every(this.data.game.board.slice(0 + ((player + 1) % 2) * 6, 18 + ((player + 1) % 2) * 6), cellCheck)
             && ((this.data.game.dice.indexOf(die) !== -1) || (_.max(this.data.game.dice) > die && _.every(this.data.game.board.slice(a, b), cellCheck)))) {
@@ -184,24 +184,32 @@ Board = React.createClass({
                 <div className="board-bg centered">
                     <div className="board">
                         <div className="row">
-                            {this.getSegment(2).map(function(segment, index) {return this.renderCell(segment, index, "top")}.bind(this))}
+                            {this.getSegment(2).map(function(segment, index) {
+                                return this.renderCell(segment, index, "top");
+                            }.bind(this))}
                             <div className="separator top">
                                 <Cell cellData={{state: 'idle', color: (player + 1) % 2, count: this.data.game.broken[(player + 1) % 2]}} />
                             </div>
-                            {this.getSegment(3).map(function(segment, index) {return this.renderCell(segment, index, "top")}.bind(this))}
+                            {this.getSegment(3).map(function(segment, index) {
+                                return this.renderCell(segment, index, "top");
+                            }.bind(this))}
                         </div>
                         <div className="row">
-                            {this.getSegment(1).map(function(segment, index) {return this.renderCell(segment, index, "bottom")}.bind(this))}
+                            {this.getSegment(1).map(function(segment, index) {
+                                return this.renderCell(segment, index, "bottom");
+                            }.bind(this))}
                             <div className="separator bottom">
                                 <Cell cellData={{state: 'idle', color: player, count: this.data.game.broken[player]}} />
                             </div>
-                            {this.getSegment(0).map(function(segment, index) {return this.renderCell(segment, index, "bottom")}.bind(this))}
+                            {this.getSegment(0).map(function(segment, index) {
+                                return this.renderCell(segment, index, "bottom");
+                            }.bind(this))}
                         </div>
                     </div>
                 </div>
                 <br />
                 <div
-                    className={"collect btn btn-" + GetBootstrapColor(this.getCollectionState(this.data.game.turn % 2), this.data.game.turn % 2)}
+                    className={"collect btn btn-" + getBootstrapColor(this.getCollectionState(this.data.game.turn % 2), this.data.game.turn % 2)}
                     onClick={this.collectionClickHandler}>
                     COLLECT THIS
                 </div>

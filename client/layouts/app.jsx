@@ -4,7 +4,7 @@ App = React.createClass({
     getMeteorData() {
         return {
             userId: Meteor.userId()
-        }
+        };
     },
 
     render() {
