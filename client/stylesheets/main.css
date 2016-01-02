@@ -1,12 +1,10 @@
 div {
     display: block;
 }
-
 .wrapper {
     padding-top: 70px;
 }
-
-.board-bg{
+.board-bg {
     margin: 0 auto;
     background-image: url(backgammonBg.jpg);
     background-position: center;
@@ -18,39 +16,43 @@ div {
     align-items: center;
     justify-content: center;
 }
-
 .board {
     width: 630px;
     height: 580px;
 }
-
 .board .row {
     height: 290px;
     margin: 0;
     display: flex;
     overflow: auto;
 }
-
 .board .cell {
     width: 45px;
     display: flex;
     justify-content: center;
 }
-
 .board .separator {
     width: 90px;
     display: flex;
     justify-content: center;
 }
-
 .top {
     align-items: flex-start;
 }
-
 .bottom {
     align-items: flex-end;
 }
-
 .collect.btn {
     width: 100%;
+}
+.spinner {
+    position: absolute;
+    left: 30%;
+    width: 40%;
+    height: 150px;
+    top: 30%;
+}
+.spinner h2 {
+    text-align: center;
+    margin: 0;
 }

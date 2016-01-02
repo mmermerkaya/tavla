@@ -173,7 +173,7 @@ Board = React.createClass({
         // Waiting for opponent
         if (this.data.game.players.length < 2) {
             return (
-                <SpinnerView />
+                <SpinnerWrapper title='Waiting for Opponent' />
             );
         }
 

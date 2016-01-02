@@ -13,7 +13,7 @@ App = React.createClass({
             content = this.props.content;
         }
         else {
-            content = <SpinnerView />;
+            content = <SpinnerWrapper title='Loading Application' />;
         }
 
         return (

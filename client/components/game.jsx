@@ -16,6 +16,6 @@ Game = React.createClass({
     },
 
     render() {
-        return this.data.ready ? <Board gameId={FlowRouter.getParam('gameId')} /> : <SpinnerView />;
+        return this.data.ready ? <Board gameId={FlowRouter.getParam('gameId')} /> : <SpinnerWrapper title='Loading Game' />;
     }
 });
