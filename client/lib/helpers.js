@@ -31,3 +31,12 @@ getBootstrapColor = function(state, color) {
         return 'primary';
     }
 };
+
+newGame = function() {
+    Meteor.call('newGame', function(error, result) {
+        if (error) {
+            console.log('error', error);
+        }
+        FlowRouter.go('/game/' + result);
+    });
+};

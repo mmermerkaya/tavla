@@ -32,7 +32,15 @@ Meteor.methods({
         });
         var currentPlayer = game.turn % 2;
 
-        // TODO: check if the game is over
+        if (game.collected[currentPlayer] === 15) {
+            Games.update({
+                _id: gameId
+            }, {
+                $set: {
+                    'winner': currentPlayer
+                }
+            });
+        }
 
         var moveAvailable = false;
         if (game.dice.length !== 0) {
@@ -155,7 +163,8 @@ Meteor.methods({
             turn: 0,
             broken: [0, 0],
             players: [Meteor.userId()],
-            collected: [0, 0]
+            collected: [0, 0],
+            winner: null
         });
     }
 });

@@ -17,7 +17,7 @@ Board = React.createClass({
     },
 
     componentWillMount() {
-        if (this.data.game.players.indexOf(this.data.userId) === -1 && this.data.game.players.length === 1) {
+        if (this.data.game.players.indexOf(this.data.userId) === -1 && this.data.game.players.length < 2) {
             Meteor.call('joinGame', this.data.game._id);
         }
     },
@@ -173,6 +173,7 @@ Board = React.createClass({
 
         return (
             <div className="game">
+                {this.data.game.winner !== null ? <Modal won={this.data.game.winner === player}/> : null}
                 <div className="board-bg centered">
                     <div className="board">
                         <div className="row">
@@ -227,8 +228,34 @@ Board = React.createClass({
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        );
+    }
+});
 
-
+Modal = React.createClass({
+    componentDidMount() {
+        $(this.getDOMNode()).modal('show');
+    },
+    componentWillUnmount: function() {
+        $(this.getDOMNode()).modal('hide');
+    },
+    render() {
+        return (
+            <div className="modal" data-backdrop="static">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h2 className="modal-title">This Game Is Over</h2>
+                        </div>
+                        <div className="modal-body">
+                            {this.props.won ? <h4>You won! Congratulations!</h4> : <h4>You lost. Better luck next time!</h4>}
+                            <h2><button type="button" className="btn btn-primary" onClick={newGame}>
+                                Start A New Game!
+                            </button></h2>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }

@@ -58,6 +58,9 @@ div {
     width: 100%;
     bottom: 0;
 }
+.modal {
+    text-align: center;
+}
 
 /* Fixed navbar and sticky footer styles
 -------------------------------------------------- */
