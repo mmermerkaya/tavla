@@ -10,11 +10,16 @@ LandingPage = React.createClass({
 
     render() {
         return (
-            <div className="landingPage">
-                <h1>Welcome to Tavla!</h1>
-                <button className="newGame" onClick={this.newGame}>
-                    New Game
-                </button>
+            <div className="jumbotron">
+                <div className="container">
+                    <h1>Welcome to Tavla.io!</h1>
+                    <p>You can start playing with a friend right now! No registration required.</p>
+                    <p>
+                        <button className="btn btn-primary" onClick={this.newGame}>
+                            Start New Game
+                        </button>
+                    </p>
+                </div>
             </div>
         );
     }

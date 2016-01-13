@@ -165,7 +165,7 @@ Board = React.createClass({
         // Waiting for opponent
         if (this.data.game.players.length < 2) {
             return (
-                <SpinnerWrapper title='Waiting for Opponent' />
+                <SpinnerWrapper title={'Waiting for Opponent'} body={'Send the current URL to a friend to start playing! :)'}/>
             );
         }
 
@@ -201,6 +201,7 @@ Board = React.createClass({
                 </div>
                 <br />
                 <div
+                    disabled={this.getCollectionState(this.data.game.turn % 2) === 'idle'}
                     className={"collect btn btn-" + getBootstrapColor(this.getCollectionState(this.data.game.turn % 2), this.data.game.turn % 2)}
                     onClick={this.collectionClickHandler}>
                     COLLECT THIS

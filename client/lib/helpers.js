@@ -28,6 +28,6 @@ getBootstrapColor = function(state, color) {
     case 'green':
         return 'success';
     default:
-        return 'default';
+        return 'primary';
     }
 };
