@@ -11,8 +11,7 @@ App = React.createClass({
         var content;
         if (this.data && this.data.userId) {
             content = this.props.content;
-        }
-        else {
+        } else {
             content = <SpinnerWrapper title='Loading Application' />;
         }
 

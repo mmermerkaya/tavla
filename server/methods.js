@@ -37,8 +37,7 @@ Meteor.methods({
             // If player has broken pieces
             if (game.broken[currentPlayer]) {
                 moveAvailable = isPlaceable(gameId);
-            }
-            else {
+            } else {
                 for (var i = 0; i < 24; i++) {
                     if (isCollectable(gameId, i) || isMoveable(gameId, i)) {
                         moveAvailable = true;
@@ -63,6 +62,7 @@ Meteor.methods({
             });
 
             // Wait 3 seconds before checking if turn will be skipped again.
+            // TODO: This is buggy. Fix it.
             Meteor.sleep(3000);
             Meteor.call('checkTurn', gameId);
         }

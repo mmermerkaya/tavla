@@ -122,7 +122,7 @@
          */
         "indent": [2, 4], // http://eslint.org/docs/rules/indent
         "brace-style": [2, // http://eslint.org/docs/rules/brace-style
-            "stroustrup", {
+            "1tbs", {
                 "allowSingleLine": false
             }
         ],

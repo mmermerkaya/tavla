@@ -31,8 +31,7 @@ Board = React.createClass({
             if (index < 2) {
                 result = result.reverse();
             }
-        }
-        else if (this.data.game.players[1] === this.data.userId) {
+        } else if (this.data.game.players[1] === this.data.userId) {
             result = this.data.game.board.slice((3 - index) * 6, (3 - index + 1) * 6);
             if (index >= 2) {
                 result = result.reverse();
@@ -58,12 +57,10 @@ Board = React.createClass({
                     this.setState({
                         selected: cellId
                     });
-                }
-                else {
+                } else {
                     this.deselect();
                 }
-            }
-            else {
+            } else {
                 // If player clicked on a moveable cell
                 if (this.getCellState(cellId) === 'moveable') {
                     console.log('moving ' + this.state.selected + ' to ' + cellId);
@@ -71,13 +68,10 @@ Board = React.createClass({
                 }
                 this.deselect();
             }
-        }
-        // If player has broken pieces
-        else {
-            if (this.getCellState(cellId) === 'moveable') {
-                console.log('moving ' + this.state.selected + ' to ' + cellId);
-                Meteor.call('putPiece', this.data.game._id, cellId);
-            }
+        } else if (this.getCellState(cellId) === 'moveable') {
+            // If player has broken pieces
+            console.log('moving ' + this.state.selected + ' to ' + cellId);
+            Meteor.call('putPiece', this.data.game._id, cellId);
         }
     },
 
@@ -111,14 +105,12 @@ Board = React.createClass({
         if (this.data.game.broken[player] === 0) {
             if (cellId === this.state.selected) {
                 return 'selected';
-            }
-            else if (this.state.selected !== null) {
+            } else if (this.state.selected !== null) {
                 if (moveableTo(this.data.game._id, this.state.selected).indexOf(cellId) !== -1) {
                     return 'moveable';
                 }
             }
-        }
-        else {
+        } else {
             // Required die value for this move
             var val = player ? cellId + 1 : 24 - cellId;
             if (this.data.game.dice.indexOf(val) !== -1 && // Distance is covered by dice and
