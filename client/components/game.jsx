@@ -17,7 +17,7 @@ Game = React.createClass({
 
     render() {
         if (!this.data.ready) {
-            return <SpinnerWrapper title={'Loading Game'} body={'This won\'t take long...'} />;
+            return <SpinnerWrapper title={'Loading Game'} />;
         }
 
         return (

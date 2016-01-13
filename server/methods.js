@@ -32,6 +32,8 @@ Meteor.methods({
         });
         var currentPlayer = game.turn % 2;
 
+        // TODO: check if the game is over
+
         var moveAvailable = false;
         if (game.dice.length !== 0) {
             // If player has broken pieces
@@ -62,9 +64,9 @@ Meteor.methods({
             });
 
             // Wait 3 seconds before checking if turn will be skipped again.
-            // TODO: This is buggy. Fix it.
-            Meteor.sleep(3000);
-            Meteor.call('checkTurn', gameId);
+            Meteor.setTimeout(function() {
+                Meteor.call('checkTurn', gameId);
+            }, 5000);
         }
     },
 

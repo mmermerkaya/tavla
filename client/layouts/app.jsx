@@ -12,7 +12,7 @@ App = React.createClass({
         if (this.data && this.data.userId) {
             content = this.props.content;
         } else {
-            content = <SpinnerWrapper title='Loading Application' />;
+            content = <SpinnerWrapper title={'Loading Application'} />;
         }
 
         return (
