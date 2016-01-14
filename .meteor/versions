@@ -30,6 +30,7 @@ ejson@1.0.7
 email@1.0.8
 es5-shim@4.1.14
 fastclick@1.0.7
+force-ssl@1.0.6
 fortawesome:fontawesome@4.5.0
 froatsnook:sleep@1.1.0
 geojson-utils@1.0.4
@@ -89,3 +90,4 @@ underscore@1.0.4
 url@1.0.5
 webapp@1.2.3
 webapp-hashing@1.0.5
+wizonesolutions:canonical@0.0.5
