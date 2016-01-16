@@ -47,12 +47,20 @@ Game = React.createClass({
         return (
             <div className="container">
                 {this.data.game.winner !== null ? <Modal won={this.data.game.winner === player} /> : null}
-                <Board game={this.data.game} player={player} />
+                <div className="row">
+                    <div className="col-md-8">
+                        <Board game={this.data.game} player={player} />
+                    </div>
+                    <div className="col-md-4">
+                        <Chat game={this.data.game} player={player} />
+                    </div>
+                </div>
             </div>
         );
     }
 });
 
+// FIXME: newGame does not work.
 Modal = React.createClass({
     componentDidMount() {
         $(this.getDOMNode()).modal('show');
