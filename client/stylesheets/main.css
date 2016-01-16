@@ -1,9 +1,10 @@
 div {
     display: block;
 }
+/* FIXME: background does not scroll.
 .game {
     overflow: auto;
-}
+}*/
 .board-bg {
     margin: 0 auto;
     background-image: url(backgammonBg.jpg);
@@ -16,8 +17,8 @@ div {
 }
 .board {
     width: 670px;
-    height: 580px;
-    padding: 0 20px;
+    height: 620px;
+    padding: 20px;
 }
 .board .row {
     height: 290px;

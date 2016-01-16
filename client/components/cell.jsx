@@ -10,13 +10,12 @@ Cell = React.createClass({
             color: getColor(this.props.cellData.state, this.props.cellData.color)
         };
 
-        var content = [];
-        for (var i = this.props.cellData.count; i > 0; i--) {
-            content.push(<span key={i}><i className="fa fa-dot-circle-o fa-3x" /><br /></span>);
-        }
+        var content = _.map(_.range(this.props.cellData.count), function(i) {
+            return <span key={i}><i className="fa fa-dot-circle-o fa-3x"/><br /></span>;
+        });
 
         if (!this.props.cellData.count && this.props.cellData.color === -1) {
-            content = <i className="fa fa-times fa-3x" />;
+            content = <i className="fa fa-times fa-3x"/>;
         }
 
         return (

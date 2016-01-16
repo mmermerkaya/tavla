@@ -48,10 +48,10 @@ Game = React.createClass({
             <div className="container">
                 {this.data.game.winner !== null ? <Modal won={this.data.game.winner === player} /> : null}
                 <div className="row">
-                    <div className="col-md-8">
+                    <div className="col-md-9">
                         <Board game={this.data.game} player={player} />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <Chat game={this.data.game} player={player} />
                     </div>
                 </div>
