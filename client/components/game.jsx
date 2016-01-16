@@ -11,7 +11,7 @@ Game = React.createClass({
         var handle = Meteor.subscribe('game', this.state.gameId, function onReady() {
             // onReady callback
             var game = Games.findOne({_id: this.state.gameId});
-            if (game.players.indexOf(Meteor.userId()) === -1 && game.players.length < 2) {
+            if (game.player() === -1 && game.players.length < 2) {
                 // Add user to the game
                 Meteor.call('joinGame', game._id);
             }
@@ -28,17 +28,16 @@ Game = React.createClass({
             return <SpinnerWrapper title={'Loading Game'} />;
         }
 
-        var player = this.data.game.players.indexOf(Meteor.userId());
         if (this.data.game.players.length < 2) {
             // Not enough players in game
-            if (player === -1) {
+            if (this.data.game.player() === -1) {
                 // User is not part of the game
                 return <SpinnerWrapper title={'Joining Game'} />;
             } else {
                 // Waiting for opponent
                 return <SpinnerWrapper title={'Waiting for Opponent'} body={'Send the current URL to a friend to start playing! :)'}/>;
             }
-        } else if (player === -1) {
+        } else if (this.data.game.player() === -1) {
             // User is not part of the game
             // TODO: Redirect and show error message
             return null;
@@ -46,13 +45,13 @@ Game = React.createClass({
 
         return (
             <div className="container">
-                {this.data.game.winner !== null ? <Modal won={this.data.game.winner === player} /> : null}
+                {this.data.game.winner !== null ? <Modal won={this.data.game.winner === this.data.game.player()} /> : null}
                 <div className="row">
                     <div className="col-md-9">
-                        <Board game={this.data.game} player={player} />
+                        <Board game={this.data.game} />
                     </div>
                     <div className="col-md-3">
-                        <Chat game={this.data.game} player={player} />
+                        <Chat game={this.data.game} />
                     </div>
                 </div>
             </div>

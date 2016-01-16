@@ -9,12 +9,12 @@ Board = React.createClass({
     // Index goes counter clockwise and starts at bottom right.
     getSegment(index) {
         var result = [];
-        if (this.props.player === 0) {
+        if (this.props.game.player() === 0) {
             result = this.props.game.board.slice(index * 6, (index + 1) * 6);
             if (index < 2) {
                 result = result.reverse();
             }
-        } else if (this.props.player === 1) {
+        } else if (this.props.game.player() === 1) {
             result = this.props.game.board.slice((3 - index) * 6, (3 - index + 1) * 6);
             if (index >= 2) {
                 result = result.reverse();
@@ -24,15 +24,15 @@ Board = React.createClass({
     },
 
     cellClickHandler(cellId) {
-        if (this.props.player !== this.props.game.turn % 2) {
+        if (this.props.game.player() !== this.props.game.turn % 2) {
             return;
         }
 
         // If player can move
-        if (this.props.game.broken[this.props.player] === 0) {
+        if (this.props.game.broken[this.props.game.player()] === 0) {
             // If player clicked on an idle cell
             if (this.getCellState(cellId) === 'idle') {
-                if (this.props.game.board[cellId].color === this.props.player) {
+                if (this.props.game.board[cellId].color === this.props.game.player()) {
                     console.log('selected ' + cellId);
 
                     this.setState({
@@ -57,8 +57,8 @@ Board = React.createClass({
     },
 
     collectionClickHandler() {
-        if (this.props.player === this.props.game.turn % 2 &&
-            this.props.game.broken[this.props.player] === 0 &&
+        if (this.props.game.player() === this.props.game.turn % 2 &&
+            this.props.game.broken[this.props.game.player()] === 0 &&
             this.getCollectionState() === 'moveable') {
             console.log('collecting ' + this.state.selected);
             Meteor.call('collectPiece', this.props.game._id, this.state.selected);
@@ -74,12 +74,12 @@ Board = React.createClass({
 
     getCellState(cellId) {
         // If it's not local player's turn, all cells default to idle.
-        if (this.props.player !== this.props.game.turn % 2) {
+        if (this.props.game.player() !== this.props.game.turn % 2) {
             return 'idle';
         }
 
         // No broken pieces
-        if (this.props.game.broken[this.props.player] === 0) {
+        if (this.props.game.broken[this.props.game.player()] === 0) {
             if (cellId === this.state.selected) {
                 return 'selected';
             } else if (this.state.selected !== null) {
@@ -89,9 +89,9 @@ Board = React.createClass({
             }
         } else {
             // Required die value for this move
-            var val = this.props.player ? cellId + 1 : 24 - cellId;
+            var val = this.props.game.player() ? cellId + 1 : 24 - cellId;
             if (this.props.game.dice.indexOf(val) !== -1 && // Distance is covered by dice and
-                (this.props.game.board[cellId].color !== (this.props.player + 1) % 2 || // Color isn't opponent's or
+                (this.props.game.board[cellId].color !== (this.props.game.player() + 1) % 2 || // Color isn't opponent's or
                 this.props.game.board[cellId].count === 1)) { // There's only one piece
                 return 'moveable';
             }
@@ -101,19 +101,19 @@ Board = React.createClass({
 
     getCollectionState() {
         // If it's not local player's turn, no collection is possible.
-        if (this.props.player !== this.props.game.turn % 2 || this.state.selected === null) {
+        if (this.props.game.player() !== this.props.game.turn % 2 || this.state.selected === null) {
             return 'idle';
         }
 
         var cellCheck = function(cell) {
-            return cell.color !== this.props.player;
+            return cell.color !== this.props.game.player();
         }.bind(this);
 
-        var a = this.props.player === 0 ? this.state.selected + 1 : 18;
-        var b = this.props.player === 0 ? 6 : this.state.selected;
-        var die = this.props.player === 0 ? this.state.selected + 1 : 24 - this.state.selected;
+        var a = this.props.game.player() === 0 ? this.state.selected + 1 : 18;
+        var b = this.props.game.player() === 0 ? 6 : this.state.selected;
+        var die = this.props.game.player() === 0 ? this.state.selected + 1 : 24 - this.state.selected;
 
-        if (_.every(this.props.game.board.slice(0 + ((this.props.player + 1) % 2) * 6, 18 + ((this.props.player + 1) % 2) * 6), cellCheck)
+        if (_.every(this.props.game.board.slice(0 + ((this.props.game.player() + 1) % 2) * 6, 18 + ((this.props.game.player() + 1) % 2) * 6), cellCheck)
             && ((this.props.game.dice.indexOf(die) !== -1) || (_.max(this.props.game.dice) > die && _.every(this.props.game.board.slice(a, b), cellCheck)))) {
             return 'moveable';
         }
@@ -140,7 +140,7 @@ Board = React.createClass({
                                 return this.renderCell(segment, index, "top");
                             }.bind(this))}
                             <div className="separator top">
-                                <Cell cellData={{state: 'idle', color: (this.props.player + 1) % 2, count: this.props.game.broken[(this.props.player + 1) % 2]}} />
+                                <Cell cellData={{state: 'idle', color: (this.props.game.player() + 1) % 2, count: this.props.game.broken[(this.props.game.player() + 1) % 2]}} />
                             </div>
                             {this.getSegment(3).map(function(segment, index) {
                                 return this.renderCell(segment, index, "top");
@@ -151,7 +151,7 @@ Board = React.createClass({
                                 return this.renderCell(segment, index, "bottom");
                             }.bind(this))}
                             <div className="separator bottom">
-                                <Cell cellData={{state: 'idle', color: this.props.player, count: this.props.game.broken[this.props.player]}} />
+                                <Cell cellData={{state: 'idle', color: this.props.game.player(), count: this.props.game.broken[this.props.game.player()]}} />
                             </div>
                             {this.getSegment(0).map(function(segment, index) {
                                 return this.renderCell(segment, index, "bottom");
@@ -179,7 +179,7 @@ Board = React.createClass({
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{this.props.player}</td>
+                            <td>{this.props.game.player()}</td>
                             <td>{this.props.game.dice.toString()}</td>
                             <td>{this.props.game.turn}</td>
                             <td>{this.props.game.broken[0]} / {this.props.game.broken[1]}</td>
