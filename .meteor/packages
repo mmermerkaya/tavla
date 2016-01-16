@@ -25,7 +25,7 @@ artwells:accounts-guest
 random
 
 # Visual
-twbs:bootstrap
+bootswatch:flatly
 fortawesome:fontawesome
 dpraburaj:react-spin
 
