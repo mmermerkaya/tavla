@@ -1,38 +1,21 @@
 Board = React.createClass({
-    // This mixin makes the getMeteorData method work
-    mixins: [ReactMeteorData],
-
-    // Loads items from the Games collection and puts them on this.data.game
-    getMeteorData() {
-        return {
-            game: Games.findOne({_id: this.props.gameId}),
-            userId: Meteor.userId()
-        };
-    },
-
     getInitialState() {
         return {
             selected: null
         };
     },
 
-    componentWillMount() {
-        if (this.data.game.players.indexOf(this.data.userId) === -1 && this.data.game.players.length < 2) {
-            Meteor.call('joinGame', this.data.game._id);
-        }
-    },
-
     // Returns cells from a quarter of the board.
     // Index goes counter clockwise and starts at bottom right.
     getSegment(index) {
         var result = [];
-        if (this.data.game.players[0] === this.data.userId) {
-            result = this.data.game.board.slice(index * 6, (index + 1) * 6);
+        if (this.props.player === 0) {
+            result = this.props.game.board.slice(index * 6, (index + 1) * 6);
             if (index < 2) {
                 result = result.reverse();
             }
-        } else if (this.data.game.players[1] === this.data.userId) {
-            result = this.data.game.board.slice((3 - index) * 6, (3 - index + 1) * 6);
+        } else if (this.props.player === 1) {
+            result = this.props.game.board.slice((3 - index) * 6, (3 - index + 1) * 6);
             if (index >= 2) {
                 result = result.reverse();
             }
@@ -41,17 +24,15 @@ Board = React.createClass({
     },
 
     cellClickHandler(cellId) {
-        var player = this.data.game.players.indexOf(this.data.userId);
-
-        if (player !== this.data.game.turn % 2) {
+        if (this.props.player !== this.props.game.turn % 2) {
             return;
         }
 
         // If player can move
-        if (this.data.game.broken[player] === 0) {
+        if (this.props.game.broken[this.props.player] === 0) {
             // If player clicked on an idle cell
             if (this.getCellState(cellId) === 'idle') {
-                if (this.data.game.board[cellId].color === player) {
+                if (this.props.game.board[cellId].color === this.props.player) {
                     console.log('selected ' + cellId);
 
                     this.setState({
@@ -64,25 +45,23 @@ Board = React.createClass({
                 // If player clicked on a moveable cell
                 if (this.getCellState(cellId) === 'moveable') {
                     console.log('moving ' + this.state.selected + ' to ' + cellId);
-                    Meteor.call('movePiece', this.data.game._id, this.state.selected, cellId);
+                    Meteor.call('movePiece', this.props.game._id, this.state.selected, cellId);
                 }
                 this.deselect();
             }
         } else if (this.getCellState(cellId) === 'moveable') {
             // If player has broken pieces
             console.log('moving ' + this.state.selected + ' to ' + cellId);
-            Meteor.call('putPiece', this.data.game._id, cellId);
+            Meteor.call('putPiece', this.props.game._id, cellId);
         }
     },
 
     collectionClickHandler() {
-        var player = this.data.game.players.indexOf(this.data.userId);
-
-        if (player === this.data.game.turn % 2 &&
-            this.data.game.broken[player] === 0 &&
+        if (this.props.player === this.props.game.turn % 2 &&
+            this.props.game.broken[this.props.player] === 0 &&
             this.getCollectionState() === 'moveable') {
             console.log('collecting ' + this.state.selected);
-            Meteor.call('collectPiece', this.data.game._id, this.state.selected);
+            Meteor.call('collectPiece', this.props.game._id, this.state.selected);
             this.deselect();
         }
     },
@@ -94,28 +73,26 @@ Board = React.createClass({
     },
 
     getCellState(cellId) {
-        var player = this.data.game.players.indexOf(this.data.userId);
-
         // If it's not local player's turn, all cells default to idle.
-        if (player !== this.data.game.turn % 2) {
+        if (this.props.player !== this.props.game.turn % 2) {
             return 'idle';
         }
 
         // No broken pieces
-        if (this.data.game.broken[player] === 0) {
+        if (this.props.game.broken[this.props.player] === 0) {
             if (cellId === this.state.selected) {
                 return 'selected';
             } else if (this.state.selected !== null) {
-                if (moveableTo(this.data.game._id, this.state.selected).indexOf(cellId) !== -1) {
+                if (moveableTo(this.props.game._id, this.state.selected).indexOf(cellId) !== -1) {
                     return 'moveable';
                 }
             }
         } else {
             // Required die value for this move
-            var val = player ? cellId + 1 : 24 - cellId;
-            if (this.data.game.dice.indexOf(val) !== -1 && // Distance is covered by dice and
-                (this.data.game.board[cellId].color !== (player + 1) % 2 || // Color isn't opponent's or
-                this.data.game.board[cellId].count === 1)) { // There's only one piece
+            var val = this.props.player ? cellId + 1 : 24 - cellId;
+            if (this.props.game.dice.indexOf(val) !== -1 && // Distance is covered by dice and
+                (this.props.game.board[cellId].color !== (this.props.player + 1) % 2 || // Color isn't opponent's or
+                this.props.game.board[cellId].count === 1)) { // There's only one piece
                 return 'moveable';
             }
         }
@@ -123,23 +100,21 @@ Board = React.createClass({
     },
 
     getCollectionState() {
-        var player = this.data.game.players.indexOf(this.data.userId);
-
         // If it's not local player's turn, no collection is possible.
-        if (player !== this.data.game.turn % 2 || this.state.selected === null) {
+        if (this.props.player !== this.props.game.turn % 2 || this.state.selected === null) {
             return 'idle';
         }
 
         var cellCheck = function(cell) {
-            return cell.color !== player;
-        };
+            return cell.color !== this.props.player;
+        }.bind(this);
 
-        var a = player === 0 ? this.state.selected + 1 : 18;
-        var b = player === 0 ? 6 : this.state.selected;
-        var die = player === 0 ? this.state.selected + 1 : 24 - this.state.selected;
+        var a = this.props.player === 0 ? this.state.selected + 1 : 18;
+        var b = this.props.player === 0 ? 6 : this.state.selected;
+        var die = this.props.player === 0 ? this.state.selected + 1 : 24 - this.state.selected;
 
-        if (_.every(this.data.game.board.slice(0 + ((player + 1) % 2) * 6, 18 + ((player + 1) % 2) * 6), cellCheck)
-            && ((this.data.game.dice.indexOf(die) !== -1) || (_.max(this.data.game.dice) > die && _.every(this.data.game.board.slice(a, b), cellCheck)))) {
+        if (_.every(this.props.game.board.slice(0 + ((this.props.player + 1) % 2) * 6, 18 + ((this.props.player + 1) % 2) * 6), cellCheck)
+            && ((this.props.game.dice.indexOf(die) !== -1) || (_.max(this.props.game.dice) > die && _.every(this.props.game.board.slice(a, b), cellCheck)))) {
             return 'moveable';
         }
         return 'idle';
@@ -156,24 +131,8 @@ Board = React.createClass({
     },
 
     render() {
-        // If user isn't part of the game
-        // TODO: Redirect and show error message
-        if (this.data.game.players.indexOf(this.data.userId) === -1) {
-            return null;
-        }
-
-        // Waiting for opponent
-        if (this.data.game.players.length < 2) {
-            return (
-                <SpinnerWrapper title={'Waiting for Opponent'} body={'Send the current URL to a friend to start playing! :)'}/>
-            );
-        }
-
-        var player = this.data.game.players.indexOf(this.data.userId);
-
         return (
             <div className="game">
-                {this.data.game.winner !== null ? <Modal won={this.data.game.winner === player}/> : null}
                 <div className="board-bg centered">
                     <div className="board">
                         <div className="row">
@@ -181,7 +140,7 @@ Board = React.createClass({
                                 return this.renderCell(segment, index, "top");
                             }.bind(this))}
                             <div className="separator top">
-                                <Cell cellData={{state: 'idle', color: (player + 1) % 2, count: this.data.game.broken[(player + 1) % 2]}} />
+                                <Cell cellData={{state: 'idle', color: (this.props.player + 1) % 2, count: this.props.game.broken[(this.props.player + 1) % 2]}} />
                             </div>
                             {this.getSegment(3).map(function(segment, index) {
                                 return this.renderCell(segment, index, "top");
@@ -192,7 +151,7 @@ Board = React.createClass({
                                 return this.renderCell(segment, index, "bottom");
                             }.bind(this))}
                             <div className="separator bottom">
-                                <Cell cellData={{state: 'idle', color: player, count: this.data.game.broken[player]}} />
+                                <Cell cellData={{state: 'idle', color: this.props.player, count: this.props.game.broken[this.props.player]}} />
                             </div>
                             {this.getSegment(0).map(function(segment, index) {
                                 return this.renderCell(segment, index, "bottom");
@@ -202,8 +161,8 @@ Board = React.createClass({
                 </div>
                 <br />
                 <div
-                    disabled={this.getCollectionState(this.data.game.turn % 2) === 'idle'}
-                    className={"collect btn btn-" + getBootstrapColor(this.getCollectionState(this.data.game.turn % 2), this.data.game.turn % 2)}
+                    disabled={this.getCollectionState(this.props.game.turn % 2) === 'idle'}
+                    className={"collect btn btn-" + getBootstrapColor(this.getCollectionState(this.props.game.turn % 2), this.props.game.turn % 2)}
                     onClick={this.collectionClickHandler}>
                     COLLECT THIS
                 </div>
@@ -220,42 +179,14 @@ Board = React.createClass({
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{player}</td>
-                            <td>{this.data.game.dice.toString()}</td>
-                            <td>{this.data.game.turn}</td>
-                            <td>{this.data.game.broken[0]} / {this.data.game.broken[1]}</td>
-                            <td>{this.data.game.collected[0]} / {this.data.game.collected[1]}</td>
+                            <td>{this.props.player}</td>
+                            <td>{this.props.game.dice.toString()}</td>
+                            <td>{this.props.game.turn}</td>
+                            <td>{this.props.game.broken[0]} / {this.props.game.broken[1]}</td>
+                            <td>{this.props.game.collected[0]} / {this.props.game.collected[1]}</td>
                         </tr>
                     </tbody>
                 </table>
-            </div>
-        );
-    }
-});
-
-Modal = React.createClass({
-    componentDidMount() {
-        $(this.getDOMNode()).modal('show');
-    },
-    componentWillUnmount: function() {
-        $(this.getDOMNode()).modal('hide');
-    },
-    render() {
-        return (
-            <div className="modal" data-backdrop="static">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h2 className="modal-title">This Game Is Over</h2>
-                        </div>
-                        <div className="modal-body">
-                            {this.props.won ? <h4>You won! Congratulations!</h4> : <h4>You lost. Better luck next time!</h4>}
-                            <h2><button type="button" className="btn btn-primary" onClick={newGame}>
-                                Start A New Game!
-                            </button></h2>
-                        </div>
-                    </div>
-                </div>
             </div>
         );
     }

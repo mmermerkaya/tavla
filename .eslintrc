@@ -50,7 +50,7 @@
          */
         "comma-dangle": 0, // http://eslint.org/docs/rules/comma-dangle
         "no-cond-assign": [2, "always"], // http://eslint.org/docs/rules/no-cond-assign
-        // "no-console": 1, // http://eslint.org/docs/rules/no-console
+        "no-console": 0, // http://eslint.org/docs/rules/no-console
         "no-debugger": 1, // http://eslint.org/docs/rules/no-debugger
         "no-alert": 1, // http://eslint.org/docs/rules/no-alert
         "no-constant-condition": 1, // http://eslint.org/docs/rules/no-constant-condition
@@ -83,7 +83,7 @@
         "eqeqeq": 2, // http://eslint.org/docs/rules/eqeqeq
         "guard-for-in": 2, // http://eslint.org/docs/rules/guard-for-in
         "no-caller": 2, // http://eslint.org/docs/rules/no-caller
-        "no-else-return": 2, // http://eslint.org/docs/rules/no-else-return
+        "no-else-return": 0, // http://eslint.org/docs/rules/no-else-return
         "no-eq-null": 2, // http://eslint.org/docs/rules/no-eq-null
         "no-eval": 2, // http://eslint.org/docs/rules/no-eval
         "no-extend-native": 2, // http://eslint.org/docs/rules/no-extend-native
