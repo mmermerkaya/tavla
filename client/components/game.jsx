@@ -19,7 +19,7 @@ Game = React.createClass({
 
         return {
             ready: handle.ready(),
-            game: Games.findOne({_id: FlowRouter.getParam('gameId')})
+            game: Games.findOne({_id: this.state.gameId})
         };
     },
 

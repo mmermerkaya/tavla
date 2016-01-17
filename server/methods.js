@@ -6,7 +6,7 @@ Meteor.methods({
             _id: gameId
         });
 
-        if (game.players[0] !== Meteor.userId() && game.players.length === 1) {
+        if (game.players.length < 2 && game.player() === -1) {
             Games.update({
                 _id: gameId
             }, {
@@ -31,6 +31,10 @@ Meteor.methods({
         var game = Games.findOne({
             _id: gameId
         });
+        if (game.player() === -1) {
+            return;
+        }
+
         var currentPlayer = game.turn % 2;
 
         if (game.collected[currentPlayer] === 15) {
