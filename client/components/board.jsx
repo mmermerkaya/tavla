@@ -9,12 +9,14 @@ Board = React.createClass({
     // Index goes counter clockwise and starts at bottom right.
     getSegment(index) {
         var result = [];
-        if (this.props.game.player() === 0) {
+        if (this.props.game.player() !== 1) {
+            // Player one and spectators
             result = this.props.game.board.slice(index * 6, (index + 1) * 6);
             if (index < 2) {
                 result = result.reverse();
             }
-        } else if (this.props.game.player() === 1) {
+        } else {
+            // Player 2
             result = this.props.game.board.slice((3 - index) * 6, (3 - index + 1) * 6);
             if (index >= 2) {
                 result = result.reverse();

@@ -37,15 +37,11 @@ Game = React.createClass({
                 // Waiting for opponent
                 return <SpinnerWrapper title={'Waiting for Opponent'} body={'Send the current URL to a friend to start playing! :)'}/>;
             }
-        } else if (this.data.game.player() === -1) {
-            // User is not part of the game
-            // TODO: Redirect and show error message
-            return null;
         }
 
         return (
             <div className="container">
-                {this.data.game.winner !== null ? <Modal won={this.data.game.winner === this.data.game.player()} /> : null}
+                {this.data.game.winner !== null ? <Modal game={this.data.game} /> : null}
                 <div className="row">
                     <div className="col-md-9">
                         <Board game={this.data.game} />
@@ -68,6 +64,15 @@ Modal = React.createClass({
         $(this.getDOMNode()).modal('hide');
     },
     render() {
+        var message;
+        if (this.props.game.player() === -1) {
+            message = <h4>This game is over.</h4>;
+        } else if (this.props.game.player() === this.props.game.winner) {
+            message = <h4>You won! Congratulations!</h4>;
+        } else {
+            message = <h4>You lost. Better luck next time!</h4>;
+        }
+
         return (
             <div className="modal" data-backdrop="static">
                 <div className="modal-dialog">
@@ -76,10 +81,12 @@ Modal = React.createClass({
                             <h2 className="modal-title">This Game Is Over</h2>
                         </div>
                         <div className="modal-body">
-                            {this.props.won ? <h4>You won! Congratulations!</h4> : <h4>You lost. Better luck next time!</h4>}
-                            <h2><button type="button" className="btn btn-primary" onClick={newGame}>
-                                Start A New Game!
-                            </button></h2>
+                            {message}
+                            <h2>
+                                <button type="button" className="btn btn-primary" onClick={newGame}>
+                                    Start A New Game!
+                                </button>
+                            </h2>
                         </div>
                     </div>
                 </div>

@@ -1,5 +1,4 @@
 // Methods without latency compensation
-// TODO: Add checks to make sure method calls are from the correct user.
 Meteor.methods({
     joinGame: function(gameId) {
         var game = Games.findOne({
