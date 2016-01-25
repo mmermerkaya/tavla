@@ -36,6 +36,9 @@ App = React.createClass({
                                 <li className={FlowRouter.getRouteName() === "About" ? "active" : ""}>
                                     <a href="/about">About</a>
                                 </li>
+                                <li className={FlowRouter.getRouteName() === "GameList" ? "active" : ""}>
+                                    <a href="/gameList">Game List</a>
+                                </li>
                             </ul>
                         </div>
                     </div>
