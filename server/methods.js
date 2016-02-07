@@ -27,12 +27,15 @@ Meteor.methods({
     // Check if turn is finished
     // Called after every move
     checkTurn: function(gameId) {
+        console.log('Checking turn for', gameId);
         var game = Games.findOne({
             _id: gameId
         });
-        if (game.player() === -1) {
-            return;
-        }
+
+        // FIXME: Breaks call from timeout
+        // if (game.player() === -1) {
+        //     return;
+        // }
 
         var currentPlayer = game.turn % 2;
 
@@ -63,6 +66,7 @@ Meteor.methods({
 
         if (!moveAvailable) {
             // New turn
+            console.log('New turn');
             var dice = Meteor.call('rollDice');
             Games.update({
                 _id: gameId
@@ -75,7 +79,7 @@ Meteor.methods({
                 }
             });
 
-            // Wait 3 seconds before checking if turn will be skipped again.
+            // Wait 5 seconds before checking if turn will be skipped again.
             Meteor.setTimeout(function() {
                 Meteor.call('checkTurn', gameId);
             }, 5000);
