@@ -37,3 +37,6 @@ momentjs:moment
 dburles:eslint
 force-ssl
 wizonesolutions:canonical
+
+# Debugging
+msavin:mongol
